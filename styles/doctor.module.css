@@ -1,3 +1,63 @@
+@mixin object-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .profile-pic {
+    color: transparent;
+    transition: all .3s ease;
+    /* @include object-center; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: all .3s ease;
+  }
+.profile-pic  input {
+      display: none;
+    }
+    
+    .profile-pic img {
+      position: absolute;
+      object-fit: cover;
+      width: var(--circleSize);
+      height:var(--circleSize);
+      box-shadow: var(--shadow);
+      border-radius:var(--radius);
+      z-index: 0;
+      grid-column: 3/4;
+        grid-row: 1/6;
+        border-radius:50% ;
+    }
+    
+    .-label {
+      cursor: pointer;
+      height: var(--circleSize);
+      width: var(--circleSize);
+    }
+    
+    .profile-pic:hover {
+      .-label {
+        display: flex;
+        justify-content: center;
+        border-radius:50% ;
+        align-items: center;
+        background-color: rgba(0,0,0,.8);
+        z-index: 10000;
+        color: var(--fontColor);
+        transition: background-color .2s ease-in-out;
+        border-radius: var(radius);
+        margin-bottom: 0;
+      }
+    }
+    
+    .profile-pic span {
+      display: inline-flex;
+      padding: .2em;
+      height: 2em;
+    }
+  
 .body{
     padding-top: 100px;
     padding-left:100px; 
@@ -8,12 +68,12 @@
     grid-template-rows:repeat(5, auto);
     /* column-gap:50px ; */
     }
-    .body img{
+    /* .body img{
         width: 40%;
         grid-column: 3/4;
         grid-row: 1/6;
         border-radius:50% ;
-     }
+     } */
  
      .input1{
         width: 60%;
@@ -49,7 +109,7 @@
         margin:auto ;
 
     }
-       .input .label{
+     .label{
        font-size: 18px;
        font-weight: 500;
        color: white;
@@ -101,17 +161,23 @@
        .search{
         background-color: var(--back-color);
        }
+       .container{
+        width: 100%;
+        background-color: var(--back-color);
+
+       }
        .inputtable{
         width: 80%;
         margin: auto;
        }
        .inputtable .table{
         text-align: center;
-        margin: 10px auto;
+        margin: 0px auto;
         color: white;
         width: 100%;
         text-align: center;
         justify-content: center;
+        padding-top: 10px;
         
      
      }
@@ -137,4 +203,8 @@
     /* box-shadow: #85dcc9 5px 5px 10px; */
     border-left:1px solid rgba(255, 255, 255, 0.363) ;
     border-right:1px solid rgba(255, 255, 255, 0.363) ;
+     }
+     .btn{
+        color: aliceblue;
+        font-size:larger ;
      }

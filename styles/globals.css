@@ -1,5 +1,9 @@
  
 :root {
+  --radius: 100px;
+  --shadow: 0 0 10px 0 rgba(255,255,255,.35);
+  --fontColor: rgb(250,250,250);
+  --circleSize: 165px;
   --numDays: 5;
   --numHours: 10;
   --timeHeight: 60px;
