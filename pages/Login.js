@@ -33,6 +33,9 @@ export default function Login() {
 
       setError('');
       setSuccess('Login successful!');
+
+      // Save authentication status in localStorage
+      localStorage.setItem('isLoggedIn', 'true');
       
       // Redirect to the homepage after successful login
       router.push('/'); // Redirect to the homepage

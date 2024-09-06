@@ -9,11 +9,9 @@ export default function Student(){
 
   // Fetching data from the API when the component mounts
   useEffect(() => {
-<<<<<<< HEAD
-    fetch('http://localhost:3001/api/v1/p1/students')
-=======
+
     fetch('http://localhost:3001/api/v1/students')
->>>>>>> 0c696dc2e083fe4781bd52b7a0702d2dee7d832f
+
       .then(response => response.json())
       .then(data => {
         console.log(data); // Logging the data for debugging

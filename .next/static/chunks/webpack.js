@@ -131,11 +131,7 @@
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	!function() {
-<<<<<<< HEAD
-/******/ 		__webpack_require__.h = function() { return "e51b0940acdc3835"; }
-=======
-/******/ 		__webpack_require__.h = function() { return "da99003fd819c714"; }
->>>>>>> 0c696dc2e083fe4781bd52b7a0702d2dee7d832f
+/******/ 		__webpack_require__.h = function() { return "bacd914fffaa5b4e"; }
 /******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

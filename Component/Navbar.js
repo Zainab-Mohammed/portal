@@ -1,10 +1,18 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Styles from '@/styles/Navbar.module.css';
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
   useEffect(() => {
+    const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+    setIsLoggedIn(loggedInStatus);
+    
     const closeIcon = document.querySelector(`.${Styles.sidebar} li:first-child a`);
     const menuButton = document.querySelector(`.${Styles.menuButton} a`);
+    //const sidebar = document.querySelector(`.${Styles.sidebar}`);
 
     const showSidebar = () => {
       const sidebar = document.querySelector(`.${Styles.sidebar}`);
@@ -16,14 +24,51 @@ const Navbar = () => {
       sidebar.style.display = 'none';
     };
 
+    /*const handleClickOutside = (event) => {
+      if (sidebar && !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+        hideSidebar();
+      }
+    };*/
+
     menuButton.addEventListener('click', showSidebar);
     closeIcon.addEventListener('click', hideSidebar);
+    //document.addEventListener('click', handleClickOutside);
 
     return () => {
       menuButton.removeEventListener('click', showSidebar);
       closeIcon.removeEventListener('click', hideSidebar);
+      //document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  // Logout function to clear login state
+  /*const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn'); // Clear login status
+    setIsLoggedIn(false);
+    //router.push('/'); // Redirect to homepage or any desired route
+  };*/
+  const handleLogout = async () => {
+    try {
+      // Send a request to the backend logout API
+      const response = await fetch('http://localhost:3001/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // Optional if you handle tokens
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        localStorage.removeItem('isLoggedIn'); 
+        localStorage.removeItem('authToken');  // Clear auth token if used
+        setIsLoggedIn(false); 
+      } else {
+        console.error('Logout failed:', await response.json());
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <nav className={Styles.nav}>
@@ -51,7 +96,16 @@ const Navbar = () => {
           </svg>
         </li>
         </div>
-        <li className={Styles.hideOnMobile}><a href="/Login">Login</a></li>
+        {/* Conditionally render Login or Logout based on login state */}
+        {isLoggedIn ? (
+          <li className={Styles.hideOnMobile}>
+            <a href="#" onClick={handleLogout}>Logout</a>
+          </li>
+        ) : (
+        <li className={Styles.hideOnMobile}>
+          <a href="#" onClick={() => router.push('/Login')}>Login</a>
+        </li>
+        )}
         <li className={Styles.menuButton}>
           <a href="#">
             {/* Menu Icon SVG */}
