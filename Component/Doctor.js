@@ -8,8 +8,9 @@ import{faTrash}from '@fortawesome/free-solid-svg-icons';
 const Doctor = () => {
   const [doctors, setDoctors] = useState([]); // State to store doctors data
   const [error, setError] = useState(null); // State to handle errors
-  const [formData, setFormData] = useState({ username: '', email: '', password: '', phone: '' }); // Form state for adding/updating doctors
+  const [formData, setFormData] = useState({ username: '', email: '', password: '', phone: '', photo: null, department: '', contact_info: '' }); // Form state for adding/updating doctors
   const [editingDoctorId, setEditingDoctorId] = useState(null); // Track which doctor is being edited
+  const [searchTerm, setSearchTerm] = useState(''); // State for search input
 
   useEffect(() => {
     fetchDoctors();
@@ -32,7 +33,15 @@ const Doctor = () => {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
+  };
+
+  // Handle file input change for photo
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prevFormData => ({ ...prevFormData, photo: file }));
+    }
   };
 
   // Handle adding or updating a doctor
@@ -42,29 +51,48 @@ const Doctor = () => {
       ? `http://localhost:3001/api/v1/p1/doctors/${editingDoctorId}` // URL for updating
       : 'http://localhost:3001/api/v1/p1/adddoctor'; // URL for adding
 
-    console.log('Submitting data:', formData, 'Method:', method); // Debugging output
+    /*console.log('Submitting data:', formData, 'Method:', method); // Debugging output
     fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
+    })*/
+    const data = new FormData();
+    data.append('username', formData.username);
+    data.append('email', formData.email);
+    data.append('password', formData.password);
+    data.append('phone', formData.phone);
+    data.append('department', formData.department);
+    data.append('contact_info', formData.contact_info);
+    if (formData.photo) {
+      data.append('photo', formData.photo);
+    }
+
+    fetch(url, {
+      method,
+      body: data
     })
-      .then(response => {
+    .then(async (response) => {
+      // Try parsing as JSON; fallback to text if parsing fails
+      const text = await response.text();
+      try {
+        // Attempt to parse response as JSON
+        const json = JSON.parse(text);
         if (!response.ok) {
-          // Try to parse as JSON if possible
-          return response.text().then(text => {
-            try {
-              const json = JSON.parse(text);
-              throw new Error(`Failed to add/update doctor. Status: ${response.status}. Response: ${JSON.stringify(json)}`);
-            } catch {
-              throw new Error(`Failed to add/update doctor. Status: ${response.status}. Response: ${text}`);
-            }
-          });
+          throw new Error(`Failed to add/update doctor. Status: ${response.status}. Response: ${JSON.stringify(json)}`);
         }
-        return response.json();
-      })
+        return json;
+      } catch {
+        // Handle non-JSON responses gracefully
+        if (!response.ok) {
+          throw new Error(`Failed to add/update doctor. Status: ${response.status}. Response: ${text}`);
+        }
+        return text; // If successful, just return the text response
+      }
+    })
       .then(() => {
         fetchDoctors(); // Refresh the list after adding/updating
-        setFormData({ username: '', email: '', password: '', phone: '' }); // Reset form data
+        setFormData({ username: '', email: '', password: '', phone: '', photo: null, department: '', contact_info: '' }); // Reset form data
         setEditingDoctorId(null); // Clear editing state
       })
       .catch(error => {
@@ -76,7 +104,12 @@ const Doctor = () => {
   // Set form data for editing a specific doctor
   const handleEditDoctor = (doctor) => {
     setEditingDoctorId(doctor.uid); // Use the correct id property 'uid'
-    setFormData({ username: doctor.username, email: doctor.email, password: doctor.password, phone: doctor.phone }); // Populate form with doctor data
+    setFormData({ username: doctor.username, 
+      email: doctor.email, 
+      password: doctor.password, 
+      phone: doctor.phone,
+      department: doctor.department,
+      contact_info: doctor.contact_info }); // Populate form with doctor data
   };
 
   // Handle deleting a doctor
@@ -103,7 +136,11 @@ const Doctor = () => {
         <td className={style["td"]}>{doctor.username}</td>
         <td className={style["td"]}>{doctor.email}</td>
         {/* <td className={style["td"]}>{doctor.password}</td> */}
-        <td className={style["td"]}>{doctor.role}</td>
+        <td className={style["td"]}>{doctor.department}</td>
+        <td className={style["td"]}>{doctor.contact_info}</td>
+        <td className={style["td"]}>
+        <img src={doctor.photo || '/default-avatar.png'} alt="Doctor Photo" className={style["photo"]} />
+        </td>
         <td className={style["td"]}>
           <button className={style["btn"]} onClick={() => handleEditDoctor(doctor)}><FontAwesomeIcon icon={faPenToSquare} /></button> {/* Set up editing */}
         </td>
@@ -117,8 +154,16 @@ const Doctor = () => {
   // Component to handle image upload and display
   const YourComponent = () => {
     const loadFile = (event) => {
-      const image = document.getElementById("output");
-      image.src = URL.createObjectURL(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file) {
+        setFormData({ ...formData, photo: file }); // Save the file in formData
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const image = document.getElementById("output");
+          image.src = reader.result; // Preview image
+        };
+        reader.readAsDataURL(file); // Convert to data URL
+      }
     };
 
     return (
@@ -133,7 +178,7 @@ const Doctor = () => {
           onChange={loadFile} // Correct event handler
         />
         <img 
-          src="/img-1.jpg" // Corrected the path to be from the public folder
+          src={formData.photo ? URL.createObjectURL(formData.photo) : "/default-avatar.png"} // Use formData.photo for preview
           id="output" 
           width="200" 
           alt="Profile Preview" // Add alt attribute for accessibility
@@ -162,6 +207,14 @@ const Doctor = () => {
           <label className={style["label"]} htmlFor="phone">Doctor Number:</label>
           <input className={style["inputS"]} type="text" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} />
         </div>
+        <div className={style["input5"]}>
+          <label className={style["label"]} htmlFor="department">Doctor Department:</label>
+          <input className={style["inputS"]} type="text" id="department" name="department" value={formData.department} onChange={handleInputChange} />
+        </div>
+        <div className={style["input6"]}>
+          <label className={style["label"]} htmlFor="contact_info">Doctor Contact Info:</label>
+          <input className={style["inputS"]} type="email" id="contact_info" name="contact_info" value={formData.contact_info} onChange={handleInputChange} />
+        </div>
         <button onClick={handleAddOrUpdateDoctor}>
           {editingDoctorId ? 'Update Doctor' : 'Add Doctor'}
         </button>
@@ -185,13 +238,15 @@ const Doctor = () => {
                 <th className={style["th"]}>Doctor Name</th>
                 <th className={style["th"]}>Doctor Email</th>
                 {/* <th className={style["th"]}>Doctor Password</th> */}
-                <th className={style["th"]}>Role</th>
+                <th className={style["th"]}>Department</th>
+              <th className={style["th"]}>Contact Info</th>
+              <th className={style["th"]}>Photo</th>
                 <th className={style["th"]}>Update</th>
                 <th className={style["th"]}>Delete</th>
               </tr>
             </thead>
             <tbody>
-              {displayDoctor(doctors)}
+              {doctors && displayDoctor(doctors)}
             </tbody>
           </table>
         </div>

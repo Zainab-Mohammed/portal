@@ -208,3 +208,10 @@
         color: aliceblue;
         font-size:larger ;
      }
+     .photo {
+      width: 50px; /* Adjust size as needed */
+      height: 50px;
+      object-fit: cover;
+      border-radius: 50%; /* Optional: make the image circular */
+    }
+    
