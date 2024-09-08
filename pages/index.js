@@ -79,7 +79,8 @@ export default function Home() {
         <div className={Styles.container}>
             <div className={Styles.containCenter}>
             <p className={Styles.p2}>Welcome to</p>
-            <h1>GUST University</h1>
+            <h1>FCI</h1>
+            <h1>ASSIUT University</h1>
             <p className={Styles.p2}>Where world-class faculty, innovative research, and dynamic students come together to advance education and foster change in the world.</p>
         </div>
     </div>

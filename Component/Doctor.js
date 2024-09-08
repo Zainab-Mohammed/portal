@@ -104,12 +104,14 @@ const Doctor = () => {
   // Set form data for editing a specific doctor
   const handleEditDoctor = (doctor) => {
     setEditingDoctorId(doctor.uid); // Use the correct id property 'uid'
-    setFormData({ username: doctor.username, 
+    setFormData({ 
+      username: doctor.username, 
       email: doctor.email, 
       password: doctor.password, 
       phone: doctor.phone,
       department: doctor.department,
-      contact_info: doctor.contact_info }); // Populate form with doctor data
+      contact_info: doctor.contact_info,
+      photo: doctor.photo, }); // Populate form with doctor data
   };
 
   // Handle deleting a doctor
@@ -139,8 +141,25 @@ const Doctor = () => {
         <td className={style["td"]}>{doctor.department}</td>
         <td className={style["td"]}>{doctor.contact_info}</td>
         <td className={style["td"]}>
-        <img src={doctor.photo || '/default-avatar.png'} alt="Doctor Photo" className={style["photo"]} />
-        </td>
+        {doctor.photo ? (
+          <Image
+            src={doctor.photo.startsWith('http') ? doctor.photo : `http://localhost:3001/${doctor.photo.replace(/\\/g, '/')}`}
+            alt={`Photo of ${doctor.username}`}
+            width={100}
+            height={100}
+            className={style["photo"]}
+          />
+        ) : (
+          <Image
+            src="/default-avatar.png"
+            alt="Default Avatar"
+            width={100}
+            height={100}
+            className={style["photo"]}
+          />
+        )}
+      </td>
+
         <td className={style["td"]}>
           <button className={style["btn"]} onClick={() => handleEditDoctor(doctor)}><FontAwesomeIcon icon={faPenToSquare} /></button> {/* Set up editing */}
         </td>
@@ -178,7 +197,14 @@ const Doctor = () => {
           onChange={loadFile} // Correct event handler
         />
         <img 
-          src={formData.photo ? URL.createObjectURL(formData.photo) : "/default-avatar.png"} // Use formData.photo for preview
+          src={
+            formData.photo
+              ? // Check if formData.photo is a File object or a URL
+                formData.photo instanceof File
+                ? URL.createObjectURL(formData.photo)
+                : `http://localhost:3001/${formData.photo.replace(/\\/g, '/')}`
+              : "/default-avatar.png"
+          }          
           id="output" 
           width="200" 
           alt="Profile Preview" // Add alt attribute for accessibility
@@ -256,3 +282,4 @@ const Doctor = () => {
 }
 
 export default Doctor;
+

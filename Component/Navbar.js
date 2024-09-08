@@ -88,7 +88,7 @@ const Navbar = () => {
 
       {/* Main Navigation Menu */}
       <ul className={Styles.mainMenu}>
-        <li className={Styles.logo}><a href="#">GUST<p>University</p></a></li>
+        <li className={Styles.logo}><a href="#">ASSIUT<p>University</p></a></li>
         <div className={Styles.search}>
         <li><input type="text" placeholder="search..." />
           <svg style={{color :"aliceblue"}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="10" height="10">
