@@ -1,0 +1,91 @@
+.body{
+    padding: 70px;
+    padding-left: 150px;
+     background-color:var(--back-color);
+     height: 100vh;
+     position: relative;
+     width: 100%;
+      }
+.body .label1{
+    font-size: 20px;
+   font-weight: 500;
+   color: aliceblue;
+     padding: 20px;
+     padding-right: 0px;
+ position: absolute;
+ top: 20%;
+ left: 20%;     
+ 
+}
+.body .label2{
+    font-size: 20px;
+   font-weight: 500;
+   color: aliceblue;
+     padding: 20px;
+ position: absolute;
+ top: 30%;
+ left: 20%;     
+ 
+}
+.body .label3{
+    font-size: 20px;
+   font-weight: 500;
+   color: aliceblue;
+     padding: 20px;
+ position: absolute;
+ top: 50%;
+ left: 20%;     
+ 
+}
+
+.select{
+    width: 35%;
+    position: absolute;
+    top:23% ;
+    left: 30%;
+    height: 35px;
+    padding: 10px;
+    border-radius:5px ;
+    background-color: rgb(253, 241, 226);
+     border: none;
+
+}
+.inputmessage {
+    width: 35%;
+    position: absolute;
+    top:34% ;
+    left: 30%;
+    height: 80px;
+    padding: 3px;
+    border-radius:5px ;
+    background-color: rgb(253, 241, 226);
+    border: none;
+
+}
+.inputemail{
+    width: 30%;
+    position: absolute;
+    top:52% ;
+    left: 35%;
+    height: 40px;
+    padding: 10px;
+    border-radius:5px ;
+    background-color: rgb(253, 241, 226);
+    border: none;
+}
+.body button{
+    border-radius: 5px;
+    padding: 10px;
+    color: rgb(34, 28, 28) ;
+    background-color:aliceblue;
+    width: 100px;
+    border: none;
+ position: absolute;
+ bottom: 20%;
+ right: 20%;
+}
+.body button:hover{
+    border: 1px solid aliceblue ;
+    background-color:var(--back-color);
+    color: aliceblue;
+}

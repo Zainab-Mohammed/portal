@@ -4,11 +4,13 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import{faTrash}from '@fortawesome/free-solid-svg-icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Doctor = () => {
   const [doctors, setDoctors] = useState([]); // State to store doctors data
   const [error, setError] = useState(null); // State to handle errors
-  const [formData, setFormData] = useState({ username: '', email: '', password: '', phone: '', photo: null, department: '', contact_info: '' }); // Form state for adding/updating doctors
+  const [formData, setFormData] = useState({ username: '', email: '', password: '', currentPassword: '', newPassword: '', phone: '', photo: null, department: '', contact_info: '' }); // Form state for adding/updating doctors
   const [editingDoctorId, setEditingDoctorId] = useState(null); // Track which doctor is being edited
   const [searchTerm, setSearchTerm] = useState(''); // State for search input
 
@@ -46,10 +48,13 @@ const Doctor = () => {
 
   // Handle adding or updating a doctor
   const handleAddOrUpdateDoctor = () => {
+    console.log('Form Data Before Before Submission:', formData)
     const method = editingDoctorId ? 'PUT' : 'POST'; // Use PUT for update, POST for add
     const url = editingDoctorId 
       ? `http://localhost:3001/api/v1/p1/doctors/${editingDoctorId}` // URL for updating
       : 'http://localhost:3001/api/v1/p1/adddoctor'; // URL for adding
+
+      console.log("URL: ",url)
 
     /*console.log('Submitting data:', formData, 'Method:', method); // Debugging output
     fetch(url, {
@@ -57,10 +62,11 @@ const Doctor = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     })*/
+
     const data = new FormData();
     data.append('username', formData.username);
     data.append('email', formData.email);
-    data.append('password', formData.password);
+    //data.append('password', formData.password);
     data.append('phone', formData.phone);
     data.append('department', formData.department);
     data.append('contact_info', formData.contact_info);
@@ -68,11 +74,42 @@ const Doctor = () => {
       data.append('photo', formData.photo);
     }
 
+    if (editingDoctorId) {
+      // Only send the password fields if they are provided
+      if (formData.newPassword && formData.currentPassword) {
+        formData.password = {
+          current: formData.currentPassword,
+          new: formData.newPassword
+
+        }
+        const passwordObj = {
+          current: formData.currentPassword,
+          new: formData.newPassword
+        };
+        data.append('password[current]', passwordObj.current);
+    data.append('password[new]', passwordObj.new);
+      }
+    }
+     else 
+     {
+      // On doctor creation, a password is required
+      data.append('password', formData.password);
+    }
+    console.log('Editing Doctor ID:', editingDoctorId);
+
+    console.log('Submitting data:', JSON.stringify(data) , 'Method:', method);
+
     fetch(url, {
       method,
-      body: data
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    // },
+      // body: JSON.stringify(data)
+      body: (data)
+
     })
     .then(async (response) => {
+      console.log("response",response)
       // Try parsing as JSON; fallback to text if parsing fails
       const text = await response.text();
       try {
@@ -91,42 +128,49 @@ const Doctor = () => {
       }
     })
       .then(() => {
+        setError(null);
         fetchDoctors(); // Refresh the list after adding/updating
-        setFormData({ username: '', email: '', password: '', phone: '', photo: null, department: '', contact_info: '' }); // Reset form data
+        setFormData({ username: '', email: '', password: '', currentPassword: '', newPassword: '', phone: '', photo: null, department: '', contact_info: '' }); // Reset form data
         setEditingDoctorId(null); // Clear editing state
+        toast.success(editingDoctorId ? 'Doctor updated successfully!' : 'Doctor added successfully!');
       })
       .catch(error => {
         console.error('Error adding/updating doctor:', error);
-        setError(error.message); // Update the error state with the specific message
+        toast.error(error.message);
+        //setError(error.message); // Update the error state with the specific message
       });
   };
 
   // Set form data for editing a specific doctor
   const handleEditDoctor = (doctor) => {
-    setEditingDoctorId(doctor.uid); // Use the correct id property 'uid'
+    setEditingDoctorId(doctor.UID); // Use the correct id property 'uid'
     setFormData({ 
       username: doctor.username, 
       email: doctor.email, 
-      password: doctor.password, 
+      //password: doctor.password, 
       phone: doctor.phone,
       department: doctor.department,
       contact_info: doctor.contact_info,
+      currentPassword: '',
+      newPassword: '',
       photo: doctor.photo, }); // Populate form with doctor data
   };
 
   // Handle deleting a doctor
-  const handleDeleteDoctor = (doctorId) => {
-    console.log('Deleting doctor with ID:', doctorId); // Debugging output
-    fetch(`http://localhost:3001/api/v1/p1/doctors/${doctorId}`, { method: 'DELETE' }) // Correct DELETE request
+  const handleDeleteDoctor = (doctor) => {
+    console.log('Deleting doctor with ID:', doctor.UID); // Debugging output
+    fetch(`http://localhost:3001/api/v1/p1/doctors/${doctor.UID}`, { method: 'DELETE' }) // Correct DELETE request
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to delete doctor.');
         }
-        setDoctors(doctors.filter(doctor => doctor.uid !== doctorId)); // Update the state without refreshing
+        setDoctors(doctors.filter(d => d.UID !== doctor.UID)); // Update the state without refreshing
+        toast.success('Doctor deleted successfully!');
       })
       .catch(error => {
         console.error('Error deleting doctor:', error);
-        setError('Failed to delete doctor.');
+        //setError('Failed to delete doctor.');
+        toast.error('Failed to delete doctor.');
       });
   };
 
@@ -151,7 +195,7 @@ const Doctor = () => {
           />
         ) : (
           <Image
-            src="/default-avatar.png"
+            src="/images/default-avatar.png"
             alt="Default Avatar"
             width={100}
             height={100}
@@ -164,7 +208,7 @@ const Doctor = () => {
           <button className={style["btn"]} onClick={() => handleEditDoctor(doctor)}><FontAwesomeIcon icon={faPenToSquare} /></button> {/* Set up editing */}
         </td>
         <td className={style["td"]}>
-          <button className={style["btn"]} onClick={() => handleDeleteDoctor(doctor.uid)}><FontAwesomeIcon icon={faTrash} /></button> {/* Handle deletion */}
+          <button className={style["btn"]} onClick={() => handleDeleteDoctor(doctor)}><FontAwesomeIcon icon={faTrash} /></button> {/* Handle deletion */}
         </td>
       </tr>
     ));
@@ -173,7 +217,12 @@ const Doctor = () => {
   // Component to handle image upload and display
   const YourComponent = () => {
     const loadFile = (event) => {
+
+      console.log("Event",event);
+
       const file = event.target.files[0];
+      console.log(file);
+
       if (file) {
         setFormData({ ...formData, photo: file }); // Save the file in formData
         const reader = new FileReader();
@@ -203,7 +252,7 @@ const Doctor = () => {
                 formData.photo instanceof File
                 ? URL.createObjectURL(formData.photo)
                 : `http://localhost:3001/${formData.photo.replace(/\\/g, '/')}`
-              : "/default-avatar.png"
+              : "/images/default-avatar.png"
           }          
           id="output" 
           width="200" 
@@ -215,6 +264,7 @@ const Doctor = () => {
 
   return (
     <>
+    <ToastContainer />
       <div className={style["body"]}>
         <YourComponent />
         <div className={style["input1"]}>
@@ -226,9 +276,49 @@ const Doctor = () => {
           <input className={style["inputS"]} type="text" id="email" name="email" value={formData.email} onChange={handleInputChange} />
         </div>
         <div className={style["input3"]}>
-          <label className={style["label"]} htmlFor="password">Doctor Password:</label>
-          <input className={style["inputS"]} type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} />
-        </div>
+        {editingDoctorId ? (
+          <>
+            <div>
+              <label className={style["label"]} htmlFor="currentPassword">Current Password:</label>
+              <input
+                className={style["inputS"]}
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                value={formData.currentPassword}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div>
+              <label className={style["label"]} htmlFor="newPassword">New Password:</label>
+              <input
+                className={style["inputS"]}
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                value={formData.newPassword}
+                onChange={handleInputChange}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <label className={style["label"]} htmlFor="password">Doctor Password:</label>
+              <input
+                className={style["inputS"]}
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+              />
+            </div>
+          </>
+        )}
+      </div>
+
+
         <div className={style["input4"]}>
           <label className={style["label"]} htmlFor="phone">Doctor Number:</label>
           <input className={style["inputS"]} type="text" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} />

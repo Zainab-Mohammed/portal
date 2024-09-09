@@ -1,22 +1,30 @@
-import { useEffect, useState } from 'react';
-import style from "@/styles/student.module.css";
+import style from "@/styles/doctor.module.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
+import{faTrash}from '@fortawesome/free-solid-svg-icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export default function Student() {
+
+const Student = () => {
   const [students, setStudents] = useState([]); // State to store students data
   const [error, setError] = useState(null); // State to handle errors
-  const [successMessage, setSuccessMessage] = useState(''); // State for success message
-  const [studentName, setStudentName] = useState(''); // State for student name input
-  const [studentEmail, setStudentEmail] = useState(''); // State for student email input
-  const [studentPassword, setStudentPassword] = useState(''); // State for student password input
-  const [studentPhone, setStudentPhone] = useState(''); // State for student phone input
+  const [formData, setFormData] = useState({ username: '', email: '', password: '', currentPassword: '', newPassword: '', phone: '' }); // Form state for adding/updating students
+  const [editingStudentId, setEditingStudentId] = useState(null); // Track which Student is being edited
+  const [searchTerm, setSearchTerm] = useState(''); // State for search input
 
-  // Fetching data from the API when the component mounts
-  const fetchStudents = () => {
+  useEffect(() => {
+    fetchstudents();
+  }, []);
+
+  // Fetch students data from the API
+  const fetchstudents = () => {
     fetch('http://localhost:3001/api/v1/p1/students')
       .then(response => response.json())
       .then(data => {
-        console.log(data); // Logging the data for debugging
-        setStudents(data); // Setting the students data
+        console.log('Fetched students:', data); // Debugging output
+        setStudents(data);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -24,137 +32,231 @@ export default function Student() {
       });
   };
 
-  useEffect(() => {
-    fetchStudents();
-  }, []);
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
+  };
 
-  // Function to add a new student
-  const addStudent = async () => {
-    const newStudent = {
-      username: studentName,
-      email: studentEmail,
-      password: studentPassword,
-      phone: studentPhone,
-    };
-
-    try {
-      const response = await fetch('http://localhost:3001/api/v1/p1/addstudent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newStudent),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to add student.');
-      }
-
-      setStudentName(''); // Clear the form fields after successful addition
-      setStudentEmail('');
-      setStudentPassword('');
-      setStudentPhone('');
-      setSuccessMessage('Student added successfully!'); // Set the success message
-      setTimeout(() => setSuccessMessage(''), 3000);
-
-      // Refetch the updated list of students
-      fetchStudents();
-    } catch (error) {
-      console.error('Error adding student:', error);
-      setError('Failed to add student.');
+  // Handle file input change for photo
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prevFormData => ({ ...prevFormData, photo: file }));
     }
   };
 
-  // Function to display students
-  const displayStudents = (students) => {
-    return students.map((student, index) => (
-      <tr key={index} className={style["tr"]}>
+  // Handle adding or updating a Student
+  const handleAddOrUpdateStudent = () => {
+    console.log('Form Data Before Before Submission:', formData)
+    const method = editingStudentId ? 'PUT' : 'POST'; // Use PUT for update, POST for add
+    const url = editingStudentId 
+      ? `http://localhost:3001/api/v1/p1/students/${editingStudentId}` // URL for updating
+      : 'http://localhost:3001/api/v1/p1/addstudent'; // URL for adding
+
+      console.log("URL: ",url)
+
+    
+
+    if (editingStudentId) {
+      // Only send the password fields if they are provided
+      if (formData.newPassword && formData.currentPassword) {
+        formData.password = {
+          current: formData.currentPassword,
+          new: formData.newPassword
+
+        }
+        
+      }
+    }
+     
+    console.log('Editing Student ID:', editingStudentId);
+
+    // console.log('Submitting data:', data, 'Method:', method);
+
+    fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+    },
+      body: JSON.stringify(formData)
+    })
+    .then(async (response) => {
+      console.log("response",response)
+      // Try parsing as JSON; fallback to text if parsing fails
+      const text = await response.text();
+      try {
+        // Attempt to parse response as JSON
+        const json = JSON.parse(text);
+        if (!response.ok) {
+          throw new Error(`Failed to add/update Student. Status: ${response.status}. Response: ${JSON.stringify(json)}`);
+        }
+        return json;
+      } catch {
+        // Handle non-JSON responses gracefully
+        if (!response.ok) {
+          throw new Error(`Failed to add/update Student. Status: ${response.status}. Response: ${text}`);
+        }
+        return text; // If successful, just return the text response
+      }
+    })
+      .then(() => {
+        setError(null);
+        fetchstudents(); // Refresh the list after adding/updating
+        setFormData({ username: '', email: '', password: '', currentPassword: '', newPassword: '', phone: '', photo: null, department: '', contact_info: '' }); // Reset form data
+        setEditingStudentId(null); // Clear editing state
+        toast.success(editingStudentId ? 'Student updated successfully!' : 'Student added successfully!');
+      })
+      .catch(error => {
+        console.error('Error adding/updating Student:', error);
+        toast.error(error.message);
+        //setError(error.message); // Update the error state with the specific message
+      });
+  };
+
+  // Set form data for editing a specific Student
+  const handleEditStudent = (Student) => {
+    setEditingStudentId(Student.UID); // Use the correct id property 'uid'
+    setFormData({ 
+      username: Student.username, 
+      email: Student.email, 
+      //password: Student.password, 
+      phone: Student.phone,
+      currentPassword: '',
+      newPassword: '',
+     }); // Populate form with Student data
+  };
+
+  // Handle deleting a Student
+  const handleDeleteStudent = (student) => {
+    console.log('Deleting Student with ID:', student.UID); // Debugging output
+    fetch(`http://localhost:3001/api/v1/p1/students/${student.UID}`, { method: 'DELETE' }) // Correct DELETE request
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to delete Student.');
+        }
+        setStudents(students.filter(s => s.UID !== student.UID)); // Update the state without refreshing
+        toast.success('Student deleted successfully!');
+      })
+      .catch(error => {
+        console.error('Error deleting Student:', error);
+        toast.error('Failed to delete Student.');
+        //setError('Failed to delete Student.');
+      });
+  };
+
+  // Display the list of students in the table
+  const displayStudent = (students) => {
+    return students.map((student) => (
+      <tr className={style["tr"]} key={student.uid}>
         <td className={style["td"]}>{student.phone}</td>
         <td className={style["td"]}>{student.username}</td>
         <td className={style["td"]}>{student.email}</td>
-        <td className={style["td"]}>{student.password}</td>
+        {/* <td className={style["td"]}>{Student.password}</td> */}
+        
         <td className={style["td"]}>
-          <button className={style["btn"]}>Update</button>
+          <button className={style["btn"]} onClick={() => handleEditStudent(student)}><FontAwesomeIcon icon={faPenToSquare} /></button> {/* Set up editing */}
         </td>
         <td className={style["td"]}>
-          <button className={style["btn"]}>Delete</button>
+          <button className={style["btn"]} onClick={() => handleDeleteStudent(student)}><FontAwesomeIcon icon={faTrash} /></button> {/* Handle deletion */}
         </td>
       </tr>
     ));
   };
 
+
+
   return (
     <>
+      <ToastContainer />
       <div className={style["body"]}>
-        <div className={style["input"]}>
-          <label className={style["label"]} htmlFor="Pname">Student Name:</label>
-          <input
-            className={style["inputS"]}
-            type="text"
-            id="Pname"
-            name="Pname"
-            value={studentName}
-            onChange={(e) => setStudentName(e.target.value)}
-            required
-          />
+        <div className={style["input1"]}>
+          <label className={style["label"]} htmlFor="username">Student Name:</label>
+          <input className={style["inputS"]} type="text" id="username" name="username" value={formData.username} onChange={handleInputChange} />
         </div>
-        <div className={style["input"]}>
-          <label className={style["label"]} htmlFor="Pprice">Student Email:</label>
-          <input
-            className={style["inputS"]}
-            type="email"
-            id="Pprice"
-            name="Pprice"
-            value={studentEmail}
-            onChange={(e) => setStudentEmail(e.target.value)}
-            required
-          />
+        <div className={style["input2"]}>
+          <label className={style["label"]} htmlFor="email">Student Email:</label>
+          <input className={style["inputS"]} type="text" id="email" name="email" value={formData.email} onChange={handleInputChange} />
         </div>
-        <div className={style["input"]}>
-          <label className={style["label"]} htmlFor="Pcategory">Student Password:</label>
-          <input
-            className={style["inputS"]}
-            type="password"
-            id="Pcategory"
-            name="Pcategory"
-            value={studentPassword}
-            onChange={(e) => setStudentPassword(e.target.value)}
-            required
-          />
+        <div className={style["input3"]}>
+        {editingStudentId ? (
+          <>
+            <div>
+              <label className={style["label"]} htmlFor="currentPassword">Current Password:</label>
+              <input
+                className={style["inputS"]}
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                value={formData.currentPassword}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div>
+              <label className={style["label"]} htmlFor="newPassword">New Password:</label>
+              <input
+                className={style["inputS"]}
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                value={formData.newPassword}
+                onChange={handleInputChange}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <label className={style["label"]} htmlFor="password">Student Password:</label>
+              <input
+                className={style["inputS"]}
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+              />
+            </div>
+          </>
+        )}
+      </div>
+
+
+
+        <div className={style["input4"]}>
+          <label className={style["label"]} htmlFor="phone">Student Number:</label>
+          <input className={style["inputS"]} type="text" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} />
         </div>
-        <div className={style["input"]}>
-          <label className={style["label"]} htmlFor="Pdescription">Student Number:</label>
-          <input
-            className={style["inputS"]}
-            type="text"
-            id="Pdescription"
-            name="Pdescription"
-            value={studentPhone}
-            onChange={(e) => setStudentPhone(e.target.value)}
-          />
-        </div>
-        <button onClick={addStudent}>Add Student</button>
+        
+        <button onClick={handleAddOrUpdateStudent}>
+          {editingStudentId ? 'Update Student' : 'Add Student'}
+        </button>
+        {error && <div className={style["error"]}>{error}</div>} {/* Display errors */}
         <br />
+      </div>
+      <div className={style["search"]}>
         <input
           className={`${style["myInput"]} ${style["inputS"]}`}
           type="text"
           placeholder="Search by name--"
           id="myInput"
         />
-        <div className={style["input2"]}>
+      </div>
+      <div className={style["container"]}>
+        <div className={style["inputtable"]}>
           <table className={style["table"]}>
             <thead>
               <tr className={style["tr"]}>
                 <th className={style["th"]}>Student Number</th>
                 <th className={style["th"]}>Student Name</th>
                 <th className={style["th"]}>Student Email</th>
-                <th className={style["th"]}>Student Password</th>
+                {/* <th className={style["th"]}>Student Password</th> */}
                 <th className={style["th"]}>Update</th>
                 <th className={style["th"]}>Delete</th>
               </tr>
             </thead>
             <tbody>
-              {displayStudents(students)}
+              {students && displayStudent(students)}
             </tbody>
           </table>
         </div>
@@ -162,3 +264,6 @@ export default function Student() {
     </>
   );
 }
+
+export default Student;
+
