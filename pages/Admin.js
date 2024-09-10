@@ -4,12 +4,15 @@ import FetchTest from "@/pages/fetchtest";
 import Schedule from "@/Component/Schedule";
 import Sidebar from "@/Component/sidebar";
 import Student from "@/Component/Student";
+import Course from "@/Component/Course";
+import SendNotifications from "@/Component/SendNotifications";
 
 export default function Admin() {
-  const [activeComponent, setActiveComponent] = useState('doctor'); // State to manage active component
+  const [activeComponent, setActiveComponent] = useState('sendnotifications'); // State to manage active component
 
   // Function to render the selected component
   const renderComponent = () => {
+    console.log('Active Component:', activeComponent); // Debugging log
     switch (activeComponent) {
       case 'doctor':
         return <Doctor />;
@@ -17,11 +20,14 @@ export default function Admin() {
         return <Schedule />;
       case 'student':
         return <Student />;
-      case 'fetchTest':
-        return <FetchTest />;
+      case 'course':
+        return <Course />;
+      case 'sendnotifications':
+        return <SendNotifications />;
+ 
       default:
-        return <Doctor />;
-    }
+        return <SendNotifications />;
+     }
   };
 
   return (
