@@ -161,3 +161,18 @@ width: 50%;
     font-size: 3rem;
     font-weight: 100;
   }
+
+  .closeIcon {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: white;
+    background-color: red;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 18px;
+    font-size: 16px;
+    cursor: pointer;
+}

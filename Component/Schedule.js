@@ -1,100 +1,178 @@
 import { useState, useEffect } from 'react';
 import style from "@/styles/schedule.module.css";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Schedule() {
     const [schedules, setSchedules] = useState([]);
+    const [Allschedules, setAllSchedules] = useState([]);
 
-    // Load schedules from local storage when the component mounts
-    useEffect(() => {
-        const storedSchedules = localStorage.getItem('schedules');
-        if (storedSchedules) {
-            setSchedules(JSON.parse(storedSchedules));
-        }
-    }, []);
+    const [doctors, setDoctors] = useState([]);
+    const [courses, setCourses] = useState([]);
 
-    // Save schedules to local storage whenever they change
     useEffect(() => {
-        localStorage.setItem('schedules', JSON.stringify(schedules));
+        const fetchSchedules = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/p1/schedules');
+                const data = await response.json();
+                console.log('Fetched schedules:', data); 
+                setAllSchedules(data || []);
+            } catch (error) {
+                console.error('Error fetching schedules:', error);
+            }
+        };
+
+        const fetchDoctors = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/p1/doctors');
+                const data = await response.json();
+                console.log('Fetched doctors:', data);
+                setDoctors(data || []);
+            } catch (error) {
+                console.error('Error fetching doctors:', error);
+            }
+        };
+
+        const fetchCourses = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/p1/courses');
+                const data = await response.json();
+                console.log('Fetched courses:', data);
+                setCourses(data || []);
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        };
+
+        fetchSchedules();
+        fetchDoctors();
+        fetchCourses();
     }, [schedules]);
 
-    const handleAddSchedule = (event) => {
+    const handleAddSchedule = async (event) => {
         event.preventDefault();
         const form = event.target;
+        const startDate = parseInt(form.StartDate.value);
+        const duration = parseInt(form.Duration.value);
+        const startTime = `${startDate.toString().padStart(2, '0')}:00:00`;
+        const endTime = `${(startDate + duration).toString().padStart(2, '0')}:00:00`;
+
         const newSchedule = {
             courseName: form.CourseName.value,
-            startDate: parseInt(form.StartDate.value),
-            duration: parseInt(form.Duration.value),
+            startTime,
+            endTime,
             doctorName: form.DoctorName.value,
             dayOfWeek: form.DayOfWeek.value,
         };
 
-        // Add the new schedule to the existing list
-        setSchedules([...schedules, newSchedule]);
+        try {
+            const response = await fetch('http://localhost:3001/api/v1/p1/schedules', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    CID: courses.find(course => course.name === newSchedule.courseName)?.CID,
+                    DID: doctors.find(doctor => doctor.username === newSchedule.doctorName)?.DID,
+                    day: newSchedule.dayOfWeek,
+                    startTime: newSchedule.startTime,
+                    endTime: newSchedule.endTime,
+                    location: 'Some location',
+                }),
+            });
+            const data = await response.json();
+            console.log('Success:', data);
+            
+            if (response.ok) {
+                // Success: Show success toast and update state
+                toast.success('Schedule added successfully!');
+                setSchedules([...schedules, newSchedule]);
+            } else if (data.message && data.message.includes('conflict')) {
+                // Conflict: Show conflict error toast
+                toast.error('Schedule conflict detected! Please choose a different time or doctor.');
+            } else {
+                // Other errors: Show general error toast
+                toast.error('Failed to add schedule.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const formatTime = (timeString) => {
+        if (!timeString) return 'Invalid Time';
+
+        const [timePart] = timeString.split('T')[1]?.split('Z') || [];
+        if (!timePart) return 'Invalid Time';
+
+        const [hours, minutes] = timePart.split(':').map(Number);
+        if (isNaN(hours) || isNaN(minutes)) {
+            console.error('Invalid time format:', timeString);
+            return 'Invalid Time';
+        }
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const adjustedHours = hours % 12 || 12;
+        return `${adjustedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
     };
 
     const controlSchedule = () => {
         return (
-            // <div className={style.content}>
-                <form onSubmit={handleAddSchedule} className={style.content}>
-                    <div className={style.labelSelect}>
+            <form onSubmit={handleAddSchedule} className={style.content}>
+                <div className={style.labelSelect}>
                     <label htmlFor="CourseName">Course Name</label>
                     <select id='CourseName' name="CourseName">
-                        <option value='Math'>Math</option>
-                        <option value='Physics'>Physics</option>
-                        <option value='Programming'>Programming</option>
-                        <option value='Electronics'>Electronics</option>
+                        {courses.map(course => (
+                            <option key={course.CID} value={course.name}>
+                                {course.name}
+                            </option>
+                        ))}
                     </select>
-                    </div>
-                    <div className={style.labelSelect}>
+                </div>
+                <div className={style.labelSelect}>
                     <label htmlFor="StartDate">Start Date</label>
                     <select id='StartDate' name="StartDate">
-                        <option value={9}>9</option>
-                        <option value={10}>10</option>
-                        <option value={11}>11</option>
-                        <option value={12}>12</option>
-                        <option value={1}>1</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
-                        <option value={4}>4</option>
-                        <option value={5}>5</option>
-                        <option value={6}>6</option>
+                        {[...Array(12).keys()].map(i => (
+                            <option key={i + 1} value={i + 1}>
+                                {i + 1}
+                            </option>
+                        ))}
                     </select>
-                    </div>
-                    <div className={style.labelSelect}>
+                </div>
+                <div className={style.labelSelect}>
                     <label htmlFor="Duration">Duration</label>
                     <select id='Duration' name="Duration">
-                        <option value={1}>1</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
+                        {[1, 2, 3].map(value => (
+                            <option key={value} value={value}>
+                                {value}
+                            </option>
+                        ))}
                     </select>
-                    </div>
-                    <div className={style.labelSelect}>
+                </div>
+                <div className={style.labelSelect}>
                     <label htmlFor="DoctorName">Doctor Name</label>
                     <select id='DoctorName' name="DoctorName">
-                        <option value='Mohamed'>Mohamed</option>
-                        <option value='Ahmed'>Ahmed</option>
-                        <option value='Sara'>Sara</option>
-                        <option value='Mostafa'>Mostafa</option>
+                        {doctors.map(doctor => (
+                            <option key={doctor.DID} value={doctor.username}>
+                                {doctor.username}
+                            </option>
+                        ))}
                     </select>
-                    </div>
-                    <div className={style.labelSelect}>
+                </div>
+                <div className={style.labelSelect}>
                     <label htmlFor="DayOfWeek">Day of the Week</label>
                     <select id='DayOfWeek' name="DayOfWeek">
-                        <option value='Saturday'>Saturday</option>
-                        <option value='Sunday'>Sunday</option>
-                        <option value='Monday'>Monday</option>
-                        <option value='Tuesday'>Tuesday</option>
-                        <option value='Wednesday'>Wednesday</option>
-                        <option value='Thursday'>Thursday</option>
+                        {['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].map(day => (
+                            <option key={day} value={day}>
+                                {day}
+                            </option>
+                        ))}
                     </select>
-                    </div>
-                    <button type="submit" className={style.AddToSchedule}>Add to Schedule</button>
-                </form>
-
-         );
+                </div>
+                <button type="submit" className={style.AddToSchedule}>Add to Schedule</button>
+            </form>
+        );
     };
 
-    // Updated daysMap to start the week on Saturday and end on Thursday
     const daysMap = {
         Saturday: 'sat',
         Sunday: 'sun',
@@ -107,22 +185,17 @@ export default function Schedule() {
     return (
         <>
             {controlSchedule()}
-             <div className={style.calendar}>
+            {/* <div className={style.calendar}>
                 <div className={style.timeline}>
                     <div className={style.spacer}></div>
-                    <div className={style.timeMarker}>9 AM</div>
-                    <div className={style.timeMarker}>10 AM</div>
-                    <div className={style.timeMarker}>11 AM</div>
-                    <div className={style.timeMarker}>12 AM</div>
-                    <div className={style.timeMarker}>1 PM</div>
-                    <div className={style.timeMarker}>2 PM</div>
-                    <div className={style.timeMarker}>3 PM</div>
-                    <div className={style.timeMarker}>4 PM</div>
-                    <div className={style.timeMarker}>5 PM</div>
-                    <div className={style.timeMarker}>6 PM</div>
+                    {[...Array(12).keys()].map(i => (
+                        <div key={i + 9} className={style.timeMarker}>
+                            {i + 9} {i + 9 >= 12 ? 'PM' : 'AM'}
+                        </div>
+                    ))}
                 </div>
                 <div className={style.days}>
-                    {Object.keys(daysMap).map((day) => (
+                    {Object.keys(daysMap).map(day => (
                         <div key={day} className={`${style.day} ${style[daysMap[day]]}`}>
                             <div className={style.date}>
                                 <p className={style.dateDay}>{day.slice(0, 3)}</p>
@@ -131,18 +204,79 @@ export default function Schedule() {
                                 {schedules
                                     .filter(schedule => schedule.dayOfWeek === day)
                                     .map((schedule, index) => {
-                                        const startTime = schedule.startDate;
-                                        const endTime = startTime + schedule.duration;
+                                        const startTime = schedule.startTime ? new Date(`1970-01-01T${schedule.startTime}Z`) : null;
+                                        const endTime = schedule.endTime ? new Date(`1970-01-01T${schedule.endTime}Z`) : null;
+                                        
+                                        if (!startTime || !endTime) {
+                                            console.error('Invalid time format:', schedule.startTime, schedule.endTime);
+                                            return null;
+                                        }
+
                                         return (
                                             <div
                                                 key={index}
-                                                className={`${style.event} ${style[`start${startTime}`]} ${style[`end${endTime}`]}`}
+                                                className={`${style.event}`}
+                                                style={{
+                                                    top: `${(startTime.getUTCHours() - 9) * 50}px`,
+                                                    height: `${(endTime.getUTCHours() - startTime.getUTCHours()) * 50}px`
+                                                }}
                                             >
                                                 <p className={style.title}>{schedule.courseName}</p>
                                                 <p className={style.time}>
-                                                    {startTime} PM - {endTime} PM
+                                                    {formatTime(startTime.toISOString())} - {formatTime(endTime.toISOString())}
                                                 </p>
                                                 <p className={style.doctor}>{schedule.doctorName}</p>
+                                            </div>
+                                        );
+                                    })}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div> */}
+            <ToastContainer />
+
+            <div className={style.calendar}>
+                <div className={style.timeline}>
+                    <div className={style.spacer}></div>
+                    {[...Array(12).keys()].map(i => (
+                        <div key={i + 9} className={style.timeMarker}>
+                            {i + 9} {i + 9 >= 12 ? 'PM' : 'AM'}
+                        </div>
+                    ))}
+                </div>
+                <div className={style.days}>
+                    {Object.keys(daysMap).map(day => (
+                        <div key={day} className={`${style.day} ${style[daysMap[day]]}`}>
+                            <div className={style.date}>
+                                <p className={style.dateDay}>{day.slice(0, 3)}</p>
+                            </div>
+                            <div className={style.events}>
+                                {Allschedules
+                                    .filter(schedule => schedule.day === day)
+                                    .map((schedule, index) => {
+                                        const startTime = schedule.start_date ? new Date(`1970-01-01T${schedule.start_date}Z`) : null;
+                                        const endTime = schedule.end_date ? new Date(`1970-01-01T${schedule.end_date}Z`) : null;
+                                        
+                                        if (!startTime || !endTime) {
+                                            console.error('Invalid time format:', schedule.start_date, schedule.end_date);
+                                            return null;
+                                        }
+
+                                        return (
+                                            <div
+                                                key={index}
+                                                className={`${style.event}`}
+                                                style={{
+                                                    top: `${(startTime.getUTCHours() - 9) * 50}px`,
+                                                    height: `${(endTime.getUTCHours() - startTime.getUTCHours()) * 50}px`
+                                                }}
+                                            >
+                                                <p className={style.title}>{schedule.course_name}</p>
+                                                <p className={style.time}>
+                                                    {formatTime(startTime.toISOString())} - {formatTime(endTime.toISOString())}
+                                                </p>
+                                                <p className={style.doctor}>{schedule.doctor_name}</p>
                                             </div>
                                         );
                                     })}

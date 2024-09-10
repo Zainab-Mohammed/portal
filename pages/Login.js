@@ -36,6 +36,9 @@ export default function Login() {
 
       // Save authentication status in localStorage
       localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('authToken', data.authToken); // Save token if needed
+      localStorage.setItem('role', data.role); // Save user role in localStorage
+      localStorage.setItem('email', email);
       
       // Redirect to the homepage after successful login
       router.push('/'); // Redirect to the homepage
