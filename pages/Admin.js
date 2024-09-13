@@ -14,7 +14,7 @@ export default function Admin() {
   const renderComponent = () => {
     console.log('Active Component:', activeComponent); // Debugging log
     switch (activeComponent) {
-      case 'doctor':
+      case 'doctors':
         return <Doctor />;
       case 'schedule':
         return <Schedule />;
@@ -23,7 +23,7 @@ export default function Admin() {
       case 'course':
         return <Course />;
       case 'sendnotifications':
-        return <SendNotifications />;
+        return <FetchTest/>;
  
       default:
         return <SendNotifications />;

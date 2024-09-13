@@ -92,7 +92,10 @@ export default function Home() {
           {/*THe list*/}
           <CollegeRegulattions/>
           {/* The doctors */}
+          <div className={Styles.contactus}>
+          <h3><span className={Styles.span1}><span className={Styles.span2}>Doctors</span></span></h3>    
         <Swiper/>
+         </div>
  {/*  Contact us */}
  <div className={Styles.contactus}>
         <h3><span className={Styles.span1}><span className={Styles.span2}>Contact Us</span></span></h3>    

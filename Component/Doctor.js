@@ -12,8 +12,7 @@ const Doctor = () => {
   const [error, setError] = useState(null); // State to handle errors
   const [formData, setFormData] = useState({ username: '', email: '', password: '', currentPassword: '', newPassword: '', phone: '', photo: null, department: '', contact_info: '' }); // Form state for adding/updating doctors
   const [editingDoctorId, setEditingDoctorId] = useState(null); // Track which doctor is being edited
-  const [searchTerm, setSearchTerm] = useState(''); // State for search input
-
+  const [searchTerm, setSearchTerm] = useState('');     
   useEffect(() => {
     fetchDoctors();
   }, []);
@@ -173,7 +172,7 @@ const Doctor = () => {
         toast.error('Failed to delete doctor.');
       });
   };
-
+ 
   // Display the list of doctors in the table
   const displayDoctor = (doctors) => {
     return doctors.map((doctor) => (
@@ -201,6 +200,7 @@ const Doctor = () => {
             height={100}
             className={style["photo"]}
           />
+        
         )}
       </td>
 
@@ -213,6 +213,16 @@ const Doctor = () => {
       </tr>
     ));
   };
+  
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter doctors based on the search term
+  const filteredDoctors = doctors.filter((doctor) =>
+    doctor.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
 
   // Component to handle image upload and display
   const YourComponent = () => {
@@ -341,9 +351,10 @@ const Doctor = () => {
         <input
           className={`${style["myInput"]} ${style["inputS"]}`}
           type="text"
-          placeholder="Search by name--"
-          id="myInput"
-        />
+          value={searchTerm}
+          onChange={handleSearchInputChange}
+          placeholder="Search by name..."
+         />
       </div>
       <div className={style["container"]}>
         <div className={style["inputtable"]}>
@@ -362,7 +373,8 @@ const Doctor = () => {
               </tr>
             </thead>
             <tbody>
-              {doctors && displayDoctor(doctors)}
+              
+              {doctors && displayDoctor(filteredDoctors.map((doctors, index) => (doctors)))}
             </tbody>
           </table>
         </div>
