@@ -5,6 +5,7 @@ import { Notification } from '@/Component/notificationSlider'; // Adjust the pat
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const router = useRouter();
@@ -12,6 +13,9 @@ const Navbar = () => {
   useEffect(() => {
     const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
     setIsLoggedIn(loggedInStatus);
+
+    const userRole = localStorage.getItem('role');
+    setRole(userRole);
 
     if (loggedInStatus) {
       fetchNotifications();
@@ -74,6 +78,7 @@ const Navbar = () => {
         localStorage.removeItem('authToken');
         setIsLoggedIn(false);
         setShowNotifications(false);
+        router.push('/');
       } else {
         console.error('Logout failed:', await response.json());
       }
@@ -107,6 +112,15 @@ const Navbar = () => {
         </div>
         {isLoggedIn ? (
           <>
+          {role === 'admin' && (
+              <li>
+                <a href="/Admin">
+                  <img src='/images/profile.svg' style={{height:"2rem",width:"2rem", filter: "invert(100%)" }}/>
+                </a>
+              </li>
+            )}
+            {role === 'student' && (
+              <>
             <li className={Styles.notificationIcon}>
               <a href="#" onClick={toggleNotifications}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26" style={{ fill: 'white' }}>
@@ -120,6 +134,25 @@ const Navbar = () => {
                 <img src='/images/table_icon.svg' style={{height: "2rem", width: "2rem", filter: "invert(100%)"}}/>
               </a>
             </li>
+            </>
+            )}
+
+            {role === 'doctor' && (
+              <>
+                <li className={Styles.notificationIcon}>
+                  <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26" style={{ fill: 'white' }}>
+                      <path d="M480 1120q-50 0-85-35t-35-85h240q0 50-35 85t-85 35Zm-300-200v-60h60v-300q0-125 68-217.5T480 260v-40q0-17 11.5-28.5T520 180q17 0 28.5 11.5T560 220v40q125 30 192.5 122.5T820 600v300h60v60H180Z"/>
+                    </svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="/profile">
+                    <img src='/images/profile.svg' style={{height:"2rem",width:"2rem", filter: "invert(100%)" }}/>
+                  </a>
+                </li>
+              </>
+            )}
 
             <li className={Styles.hideOnMobile}>
               <a href="#" onClick={handleLogout}>Logout</a>

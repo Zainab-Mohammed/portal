@@ -162,17 +162,37 @@ width: 50%;
     font-weight: 100;
   }
 
-  .closeIcon {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    color: white;
-    background-color: red;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
+  /* .event {
+    position: relative; 
+} */
+
+  .event {
+    position: relative;
+    background-color: rgb(246, 195, 203); /* Pink background color */
+    color: black; /* Text color */
+    border: 1px solid #ddd; /* Optional border */
+    padding: 40px; /* Optional padding */
+    box-sizing: border-box; /* Ensures padding is included in the height/width */
+    border-radius: 4px; /* Optional rounded corners */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    line-height: 18px;
-    font-size: 16px;
+}
+
+.closeIcon {
+    position: absolute;
+    top: 5px;  /* Adjust positioning as needed */
+    left: 5px; /* Adjust positioning as needed */
+    width: 16px;  /* Adjust the size of the icon */
+    height: 16px;
     cursor: pointer;
+    z-index: 10; /* Ensure the icon appears on top */
+    opacity: 0.7; /* Optional: adjust the opacity for better visibility */
+    transition: opacity 0.2s;
+}
+
+.closeIcon:hover {
+    opacity: 1; /* Increase opacity on hover */
 }

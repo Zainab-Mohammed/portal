@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';  // Import the useRouter hook
 import style from "@/styles/Login.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -34,14 +36,21 @@ export default function Login() {
       setError('');
       setSuccess('Login successful!');
 
+      // document.cookie = `authToken=${data.authToken}; path=/`;
+      // document.cookie = `role=${data.role}; path=/`;
+      // document.cookie = `email=${email}; path=/`;
+
       // Save authentication status in localStorage
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('authToken', data.authToken); // Save token if needed
       localStorage.setItem('role', data.role); // Save user role in localStorage
       localStorage.setItem('email', email);
+      localStorage.setItem('user', JSON.stringify(data));
       
       // Redirect to the homepage after successful login
       router.push('/'); // Redirect to the homepage
+      toast.success('Logged in successfully!');
+
 
     } catch (error) {
       setError('An error occurred while logging in. Please try again.');

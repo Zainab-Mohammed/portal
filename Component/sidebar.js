@@ -17,31 +17,31 @@ export default function Sidebar({ setActiveComponent }) {
         <nav className={styles["main-menu"]}>
           <ul>
             <li className={styles["has-subnav"]}>
-              <a onClick={() => setActiveComponent('notifications')}>
+              <a href="/Admin?component=notifications" onClick={() => setActiveComponent('notifications')}>
               <FontAwesomeIcon className={`${styles.fa} ${styles.fa2x}`} icon={faHouse} size="2xl" />
             <span className={styles["nav-text"]}>Notfication</span>
               </a>
             </li>
             <li className={styles["has-subnav"]}>
-              <a href="#" onClick={() => setActiveComponent('schedule')}>
+              <a href="/Admin?component=schedule" onClick={() => setActiveComponent('schedule')}>
               <FontAwesomeIcon className={`${styles.fa} ${styles.fa2x}`} icon={faTableCells} size="2xl" />
               <span className={styles["nav-text"]}>Schedule</span>
               </a>
             </li>
             <li className={styles["has-subnav"]}>
-              <a href="#" onClick={() => setActiveComponent('student')}>
+              <a href="/Admin?component=student" onClick={() => setActiveComponent('student')}>
               <FontAwesomeIcon className={`${styles.fa} ${styles.fa2x}`} icon={faUsers} size="2xl" />
             <span className={styles["nav-text"]}>Student</span>
               </a>
             </li>
             <li className={styles["has-subnav"]}>
-              <a href="#" onClick={() => setActiveComponent('doctors')}>
+              <a href="/Admin?component=doctors" onClick={() => setActiveComponent('doctors')}>
               <FontAwesomeIcon className={`${styles.fa} ${styles.fa2x}`} icon={faUserTie} size="2xl" />
                 <span className={styles["nav-text"]}>Doctors</span>
               </a>
             </li>
             <li className={styles["has-subnav"]}>
-              <a href="#" onClick={() => setActiveComponent('course')}>
+              <a href="/Admin?component=course" onClick={() => setActiveComponent('course')}>
               <FontAwesomeIcon className={`${styles.fa} ${styles.fa2x}`} icon={faBookOpenReader} size="2xl" />
              <span className={styles["nav-text"]}>Course</span>
               </a>
@@ -49,7 +49,7 @@ export default function Sidebar({ setActiveComponent }) {
           </ul>
           <ul className={styles.logout}>
             <li className={styles["has-subnav"]}>
-              <a href="#">
+              <a href="#/Logout">
               <FontAwesomeIcon className={`${styles.fa} ${styles.fa2x}`} icon={faArrowRightFromBracket} size="2xl" />
                 <span className={styles["nav-text"]}>Logout</span>
               </a>
