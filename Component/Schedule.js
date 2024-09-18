@@ -148,6 +148,9 @@ export default function Schedule() {
                                 {course.name}
                             </option>
                         ))}
+                        <option>math</option>
+                        <option>machine Learning</option>
+
                     </select>
                 </div>
                 <div className={style.labelSelect}>

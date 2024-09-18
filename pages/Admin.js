@@ -6,7 +6,7 @@ import Schedule from "@/Component/Schedule";
 import Sidebar from "@/Component/sidebar";
 import Student from "@/Component/Student";
 import Course from "@/Component/Course";
-import SendNotifications from "@/Component/SendNotifications";
+import SendNotifications from "@/pages/SendNotifications";
 import withAdminAuth from "@/hoc/withAdminAuth";
 
 function Admin() {
