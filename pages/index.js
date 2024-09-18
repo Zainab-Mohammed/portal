@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useState } from "react";
 import { Inter } from "next/font/google";
 import Styles from '@/styles/Style.module.css'; // Adjust the path as needed
 import Navbar from "@/Component/Navbar";
@@ -65,6 +66,14 @@ const CollegeRegulattions=()=>{
 
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken"); 
+    setIsLoggedIn(!!authToken);
+  }, []);
+
+
   return (
     <>
       <Head>
@@ -92,10 +101,12 @@ export default function Home() {
           {/*THe list*/}
           <CollegeRegulattions/>
           {/* The doctors */}
-          <div className={Styles.contactus}>
-          <h3><span className={Styles.span1}><span className={Styles.span2}>Doctors</span></span></h3>    
-        <Swiper/>
-         </div>
+          {isLoggedIn && (
+            <div className={Styles.contactus}>
+            <h3><span className={Styles.span1}><span className={Styles.span2}>Doctors</span></span></h3>    
+          <Swiper/>
+          </div>
+         )}
  {/*  Contact us */}
  <div className={Styles.contactus}>
         <h3><span className={Styles.span1}><span className={Styles.span2}>Contact Us</span></span></h3>    

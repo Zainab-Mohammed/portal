@@ -218,7 +218,7 @@ const Navbar = () => {
             )}
 
             <li className={Styles.hideOnMobile}>
-              <a href="#" onClick={handleLogout}>Logout</a>
+              <a href="/" onClick={handleLogout}>Logout</a>
             </li>
           </>
         ) : (
@@ -267,7 +267,7 @@ const Navbar = () => {
                      />
                 </li>
                 <li>
-                  <a href="#">
+                  <a href="/StudentSchedule">
                     <img src='/images/table_icon.svg' style={{height: "2rem", width: "2rem", filter: "invert(100%)"}}/>
                   </a>
                 </li>
@@ -294,7 +294,7 @@ const Navbar = () => {
                      />
                 </li>
                 <li>
-                  <a href="/profile">
+                  <a href="/fetchtest">
                     <img src='/images/profile.svg' style={{height:"2rem",width:"2rem", filter: "invert(100%)" }}/>
                   </a>
                 </li>
@@ -302,7 +302,7 @@ const Navbar = () => {
             )}
 
             <li className={Styles.hideOnMobile}>
-              <a href="#" onClick={handleLogout}>Logout</a>
+              <a href="/" onClick={handleLogout}>Logout</a>
             </li>
           </>
         ) : (

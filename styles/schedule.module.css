@@ -171,7 +171,7 @@ width: 50%;
     background-color: rgb(246, 195, 203); /* Pink background color */
     color: black; /* Text color */
     border: 1px solid #ddd; /* Optional border */
-    padding: 40px; /* Optional padding */
+    padding: 60px; /* Optional padding */
     box-sizing: border-box; /* Ensures padding is included in the height/width */
     border-radius: 4px; /* Optional rounded corners */
     display: flex;

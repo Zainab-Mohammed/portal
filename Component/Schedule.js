@@ -85,6 +85,7 @@ export default function Schedule() {
             endTime,
             doctorName: form.DoctorName.value,
             dayOfWeek: form.DayOfWeek.value,
+            location: form.location.value,
         };
 
         try {
@@ -99,21 +100,19 @@ export default function Schedule() {
                     day: newSchedule.dayOfWeek,
                     startTime: newSchedule.startTime,
                     endTime: newSchedule.endTime,
-                    location: 'Some location',
+                    //location: 'Some location',
+                    location: newSchedule.location,
                 }),
             });
             const data = await response.json();
             console.log('Success:', data);
             
             if (response.ok) {
-                // Success: Show success toast and update state
                 toast.success('Schedule added successfully!');
                 setSchedules([...schedules, newSchedule]);
             } else if (data.message && data.message.includes('conflict')) {
-                // Conflict: Show conflict error toast
                 toast.error('Schedule conflict detected! Please choose a different time or doctor.');
             } else {
-                // Other errors: Show general error toast
                 toast.error('Failed to add schedule.');
             }
         } catch (error) {
@@ -148,9 +147,6 @@ export default function Schedule() {
                                 {course.name}
                             </option>
                         ))}
-                        <option>math</option>
-                        <option>machine Learning</option>
-
                     </select>
                 </div>
                 <div className={style.labelSelect}>
@@ -189,6 +185,16 @@ export default function Schedule() {
                         {['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].map(day => (
                             <option key={day} value={day}>
                                 {day}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className={style.labelSelect}>
+                    <label htmlFor="location">Location</label>
+                    <select id='location' name="location">
+                        {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(loc => (
+                            <option key={loc} value={loc}>
+                                {loc}
                             </option>
                         ))}
                     </select>
@@ -304,7 +310,8 @@ export default function Schedule() {
                                                 <p className={style.time}>
                                                     {formatTime(startTime.toISOString())} - {formatTime(endTime.toISOString())}
                                                 </p>
-                                                <p className={style.doctor}>{schedule.doctor_name}</p>
+                                                <p className={style.doctor}>Dr. {schedule.doctor_name}</p>
+                                                <p className={style.location}>Hall {schedule.location}</p>
                                             </div>
                                         );
                                     })}

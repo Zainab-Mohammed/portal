@@ -4,16 +4,13 @@ import { useRouter } from 'next/router';
 const withAdminAuth = (WrappedComponent) => {
   return function AdminProtected(props) {
     const router = useRouter();
+    //const { component } = router.query;
 
     useEffect(() => {
       const userRole = localStorage.getItem('role'); 
-      const user = localStorage.getItem('user'); 
+      const token = localStorage.getItem('authToken');
 
-      if(!user)
-        {
-            router.push('/Login');
-        }
-      if (userRole !== 'admin') {
+      if (!token || userRole !== 'admin' ) {
         router.push('/404'); 
       }
     }, [router]);

@@ -40,15 +40,14 @@ export default function Login() {
       // document.cookie = `role=${data.role}; path=/`;
       // document.cookie = `email=${email}; path=/`;
 
-      // Save authentication status in localStorage
       localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('authToken', data.token); // Save token if needed
-      localStorage.setItem('role', data.role); // Save user role in localStorage
+      localStorage.setItem('authToken', data.token); 
+      localStorage.setItem('role', data.role); 
       localStorage.setItem('email', email);
       localStorage.setItem('user', JSON.stringify(data));
       
-      // Redirect to the homepage after successful login
-      router.push('/'); // Redirect to the homepage
+     
+      router.push('/'); 
       toast.success('Logged in successfully!');
 
 
