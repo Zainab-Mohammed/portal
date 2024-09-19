@@ -2,7 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/Login": "pages/Login.js",
-  "/fetchtest": "pages/fetchtest.js",
-  "/": "pages/index.js"
+  "/": "pages/index.js",
+  "/TheList": "pages/TheList.js",
+  "/404": "pages/404.js",
+  "/Admin": "pages/Admin.js"
 }

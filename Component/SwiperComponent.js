@@ -57,12 +57,12 @@ export default function Page() {
                           <div className={style["details"]}>
                             <div className={style["name"]}>{doctor.username}</div>
                           </div>
-                          <div className={style["media-icons"]}>
+                          {/* <div className={style["media-icons"]}>
                             <a href="#"><i className="fab fa-facebook-f"></i></a>
                             <a href="#"><i className="fab fa-twitter"></i></a>
                             <a href="#"><i className="fab fa-instagram"></i></a>
                             <a href="#"><i className="fab fa-youtube"></i></a>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>

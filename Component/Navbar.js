@@ -135,7 +135,9 @@ const Navbar = () => {
         localStorage.removeItem('authToken');
         setIsLoggedIn(false);
         setShowNotifications(false);
-        router.push('/');
+        localStorage.removeItem('role');
+        //router.push('/');
+        window.location.href = '/';
       } else {
         console.error('Logout failed:', await response.json());
       }

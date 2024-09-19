@@ -17,10 +17,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/index.js"
     ],
-    "/Login": [
+    "/404": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Login.js"
+      "static/chunks/pages/404.js"
+    ],
+    "/Admin": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Admin.js"
+    ],
+    "/TheList": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/TheList.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
@@ -31,11 +41,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
-    ],
-    "/fetchtest": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/fetchtest.js"
     ]
   },
   "ampFirstPages": []

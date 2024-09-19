@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import React from 'react';
 import style from "@/styles/schedule.module.css";
 import { toast, ToastContainer } from 'react-toastify';
@@ -11,23 +12,30 @@ export default function Schedule() {
 
     const [doctors, setDoctors] = useState([]);
     const [courses, setCourses] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            router.push('/Login');
+            return;
+        }
+
         const fetchData = async () => {
             try {
                 const [schedulesRes, doctorsRes, coursesRes] = await Promise.all([
                     fetch('http://localhost:3001/api/v1/p1/schedules'),
-                    fetch('http://localhost:3001/api/v1/p1/doctors'),
-                    fetch('http://localhost:3001/api/v1/p1/courses')
+                    // fetch('http://localhost:3001/api/v1/p1/doctors'),
+                    // fetch('http://localhost:3001/api/v1/p1/courses')
                 ]);
 
                 const schedulesData = await schedulesRes.json();
-                const doctorsData = await doctorsRes.json();
-                const coursesData = await coursesRes.json();
+                // const doctorsData = await doctorsRes.json();
+                // const coursesData = await coursesRes.json();
 
                 setAllSchedules(schedulesData || []);
-                setDoctors(doctorsData || []);
-                setCourses(coursesData || []);
+                // setDoctors(doctorsData || []);
+                // setCourses(coursesData || []);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

@@ -44,17 +44,67 @@ const AboutUs=()=>{
         <h3><span className={Styles.span1}><span className={Styles.span2}>About Us</span></span></h3>
         <div className={Styles.aboutContent}>
     <Image className={Styles.img}src="/view-school-building_23-2151031908.avif" alt="student seat for learning" width="250"height="300"/>
-            <p>In 1898, the University of East London was founded with the aim of serving both its local community and a wider audience. Our belief is that education is a potent tool in decreasing inequality and promoting a brighter future for everyone. As a demonstration of our dedication to this cause, we partnered with Luke Gray, a former student, to produce an interactive mural at our Docklands Campus that mirrors our fundamental principles. Luke is a surrealist street artist who combines conventional painting methods with augmented reality and integrates various textures and designs into his creations.</p>
-          </div>
+    <p>
+    <strong>Vision of the Faculty</strong>
+          <br />
+            The Faculty of Computers and Information at Assiut University aspires to be a leading
+            educational and research institution in the field of computing,
+            community development, and meeting global quality standards.
+            <br /><br />
+
+          <strong>Mission of the Faculty</strong>
+          <br />
+            The mission of the faculty is to serve students and the community by
+            providing distinguished education and innovative research in the
+            fields of computer science, information systems, technology, and
+            multimedia. It aims to develop the student's character to make them
+            capable of participating in building a knowledge-based economy,
+            fostering a desire for innovation, teamwork, and an appreciation for
+            the values of continuous education and self-learning.
+            <br /><br />
+            <br />
+            The faculty also strives to enable students to compete locally,
+            regionally, and internationally in the job market, while fostering
+            creative engagement with society and entrepreneurs.
+            <br /><br />
+        </p>
+        </div>
           </div>
   );
 };
 const CollegeRegulattions=()=>{
   return(
     <div className={Styles.about}>
-    <h3><span className={Styles.span1}><span className={Styles.span2}>THE COLLEGE REGULATIONS</span></span></h3>
+    <h3><span className={Styles.span1}><span className={Styles.span2}>THE COLLEGE REGULATION</span></span></h3>
     <div className={Styles.aboutContent2}>
-        <p>In 1898, the University of East London was founded with the aim of serving both its local community and a wider audience. Our belief is that education is a potent tool in decreasing inequality and promoting a brighter future for everyone. As a demonstration of our dedication to this cause, we partnered with Luke Gray, a former student, to produce an interactive mural at our Docklands Campus that mirrors our fundamental principles. Luke is a surrealist street artist who combines conventional painting methods with augmented reality and integrates various textures and designs into his creations.<br/>
+        <p><strong>Faculty Vision</strong><br />
+          The Faculty of Computers and Information at Assiut University aspires to achieve excellence
+          in education, research, and community service by realizing global
+          quality standards in the fields of computers and information
+          technology. It aims to serve learners locally, regionally, and
+          internationally.<br /><br />
+
+          <strong>Faculty Mission</strong><br />
+          The mission of the faculty is represented in the following:<br />
+          - Developing the personal and intellectual skills of learners through
+          advanced research and learning in the fields of computer science,
+          information systems, and multimedia, with the goal of creating
+          graduates who are eager for teamwork, love innovation, and are
+          capable of competing locally, regionally, and internationally.<br />
+          - Developing programs that keep pace with labor market needs and the
+          advancements of learning, using modern methodologies and tools in a
+          forward-thinking, innovative manner.<br />
+          - Promoting a culture of continuous learning and the values of
+          lifelong education through innovative and interactive teaching
+          methods that meet the needs of society.<br />
+          - Conducting applied research that serves the fields of the faculty
+          through interdisciplinary studies to achieve scientific and practical
+          goals, fostering entrepreneurship and addressing societal
+          challenges.<br />
+          - Providing distinguished community services in the faculty's
+          fields.<br />
+          - Encouraging the adoption of innovative, creative, and leading
+          initiatives.<br/>
         <button><Link href="../TheList">
       Click to read more <FontAwesomeIcon icon={faArrowRight} /></Link>
     </button></p>
