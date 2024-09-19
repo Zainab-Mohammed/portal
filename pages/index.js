@@ -10,6 +10,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from "react"; // Correct importimport Swiper from 'swiper';
 import 'swiper/swiper-bundle.css'; // Import Swiper styles
 import Swiper from "@/Component/SwiperComponent";
+import CoursesSwiper from "@/Component/CoursesSwiper";
 const inter = Inter({ subsets: ["latin"] });
 const DepartmentSection = () => {
   return (
@@ -157,6 +158,14 @@ export default function Home() {
           <Swiper/>
           </div>
          )}
+         <div></div>
+         {isLoggedIn && (
+            <div className={Styles.contactus}>
+            <h3><span className={Styles.span1}><span className={Styles.span2}>Courses</span></span></h3>    
+          <CoursesSwiper/>
+          </div>
+         )}
+         
  {/*  Contact us */}
  <div className={Styles.contactus}>
         <h3><span className={Styles.span1}><span className={Styles.span2}>Contact Us</span></span></h3>    

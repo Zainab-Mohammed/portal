@@ -8,7 +8,7 @@ import {faUserTie} from '@fortawesome/free-solid-svg-icons';
 import {faBookOpenReader}  from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons';
-import { handleLogout } from './Navbar';
+//import { handleLogout } from './Navbar';
 
 export default function Sidebar({ setActiveComponent }) {
     return (
@@ -50,9 +50,9 @@ export default function Sidebar({ setActiveComponent }) {
           </ul>
           <ul className={styles.logout}>
             <li className={styles["has-subnav"]}>
-              <a href="#" onClick={handleLogout}>
+              <a href="/" >
               <FontAwesomeIcon className={`${styles.fa} ${styles.fa2x}`} icon={faArrowRightFromBracket} size="2xl" />
-                <span className={styles["nav-text"]}>Logout</span>
+                <span className={styles["nav-text"]}>Home</span>
               </a>
             </li>
           </ul>
