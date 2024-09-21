@@ -42,6 +42,8 @@ export default function Login() {
 
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('authToken', data.token); 
+      localStorage.setItem('UID', data.UID); 
+
       localStorage.setItem('role', data.role); 
       localStorage.setItem('email', email);
       localStorage.setItem('user', JSON.stringify(data));

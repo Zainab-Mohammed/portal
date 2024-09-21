@@ -212,7 +212,7 @@ const Navbar = () => {
                      />
                 </li>
                 <li>
-                  <a href="/profile">
+                  <a href="/fetchtest">
                     <img src='/images/profile.svg' style={{height:"2rem",width:"2rem", filter: "invert(100%)" }}/>
                   </a>
                 </li>
