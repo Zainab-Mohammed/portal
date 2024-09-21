@@ -22,11 +22,6 @@ export default function Course() {
         setSearchTerm(e.target.value);
     };
 
-    const filteredCourses = courses.filter(course =>
-        course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.code.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
     const fetchCourses = async () => {
         try {
             const response = await fetch('http://localhost:3001/api/v1/p1/courses');
@@ -38,13 +33,18 @@ export default function Course() {
         }
     };
 
+    // Filter courses based on the search term
+    const filteredCourses = courses.filter((course) =>
+        course.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     const addOrUpdateCourse = async () => {
         if (!name.trim() || !code.trim() || !description.trim()) {
             setErrorMessage('All fields are required and cannot be empty.');
             return;
         }
-      
-        const existingCourseWithSameCode = courses.find(courseItem => 
+
+        const existingCourseWithSameCode = courses.find(courseItem =>
             courseItem.code === code && courseItem.cid !== currentCourseId
         );
         if (existingCourseWithSameCode) {
@@ -53,7 +53,7 @@ export default function Course() {
         }
 
         const course = { name, code, description };
-   
+
         try {
             let response;
             if (isEditing && currentCourseId) {
@@ -93,7 +93,6 @@ export default function Course() {
             setErrorMessage(error.message);
         }
     };
-
 
     const deleteCourse = async (courseId) => {
         try {
@@ -173,9 +172,9 @@ export default function Course() {
             <input
                 className={`${style["myInput"]} ${style["inputS"]}`}
                 type="text"
-                placeholder="Search by name or code"
-                value={searchTerm}
                 onChange={handleSearchChange}
+                value={searchTerm}
+                placeholder="Search by name"
             />
 
             {/* Course table */}
@@ -191,7 +190,7 @@ export default function Course() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredCourses.map((course) => (
+                        {filteredCourses.length > 0 && filteredCourses.map((course) => (
                             <tr key={course.cid} className={style["tr"]}>
                                 <td className={style["td"]}>{course.code}</td>
                                 <td className={style["td"]}>{course.name}</td>

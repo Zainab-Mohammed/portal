@@ -1,16 +1,19 @@
+//Component/SwiperComponent.js
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import style from "@/styles/swipe.module.css";
-
+import { useRouter } from 'next/router';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 export default function Page() {
   const [doctors, setDoctors] = useState([]);
-
+  
+  const router = useRouter();
+ 
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -41,11 +44,15 @@ export default function Page() {
           <div className={style["body"]}>  
             <div className={style["container"]}>  
               {doctors.map((doctor) => (
-                <SwiperSlide key={doctor.DID} className='flex h-full w-full items-center justify-center'>
+                <SwiperSlide key={doctor.DID} 
+                onClick={() =>{
+                  console.log("Doctor ID:", doctor.DID)
+                  router.push(`/DoctorPageForStudent/${doctor.DID}`)}}  
+                className='flex h-full w-full items-center justify-center'>
                   <div className={style["mainCard"]}>
                     <div className={style["cards"]}>
-                      <div className={style["card"]}>
-                        <div className={style["content"]}>
+                       <div className={style["card"]} >
+                       <div className={style["content"]}>
                           <div className={style["img"]}>
                             <Image
                               src={`http://localhost:3001/${doctor.photo}`} // Ensure this URL is correctly formatted
@@ -57,15 +64,10 @@ export default function Page() {
                           <div className={style["details"]}>
                             <div className={style["name"]}>{doctor.username}</div>
                           </div>
-                          {/* <div className={style["media-icons"]}>
-                            <a href="#"><i className="fab fa-facebook-f"></i></a>
-                            <a href="#"><i className="fab fa-twitter"></i></a>
-                            <a href="#"><i className="fab fa-instagram"></i></a>
-                            <a href="#"><i className="fab fa-youtube"></i></a>
-                          </div> */}
+                          
                         </div>
                       </div>
-                    </div>
+                     </div>
                   </div>
                 </SwiperSlide>
               ))}

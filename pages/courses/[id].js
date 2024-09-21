@@ -27,8 +27,10 @@ const CoursePage = () => {
     }
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-
+  if (loading) return(<div className="loading">
+    <div className="loadingSpinner"></div>
+    <span>Loading...</span>
+</div>) ;
   if (!course) return <p>Course not found.</p>;
 
   return (

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import style from "@/styles/sendNotification.module.css"; // Ensure correct path to your styles
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function SendNotifications() {
   const [selectedOption, setSelectedOption] = useState(''); // State to track selected option
@@ -66,6 +67,7 @@ export default function SendNotifications() {
       const result = await response.json();
       console.log('Notification sent successfully:', result);
         // Handle success (e.g., display success message)
+        toast.success('Notification sent successfully!');
         setMessage('');
         setEmail('');
     } catch (error) {

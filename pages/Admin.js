@@ -8,7 +8,7 @@ import Student from "@/Component/Student";
 import Course from "@/Component/Course";
 import SendNotifications from "@/pages/SendNotifications";
 import withAdminAuth from "@/hoc/withAdminAuth";
-
+import Contacts from "@/Component/Contact";
 function Admin() {
   const router = useRouter();
   const { component } = router.query; // Get the 'component' from the URL query parameter
@@ -26,6 +26,8 @@ function Admin() {
         return <Course />;
       case 'office':
         return <FetchTest/>;
+      case 'Contact': 
+        return <Contacts/>;
       default:
         return <SendNotifications />;
     }

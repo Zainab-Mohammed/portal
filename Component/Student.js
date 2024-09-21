@@ -31,12 +31,22 @@ const Student = () => {
         setError('Failed to fetch students.');
       });
   };
-
+ 
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
   };
+ 
+
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter students based on the search term
+  const filteredStudents = students.filter((student) =>
+    student.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Handle file input change for photo
   const handleFileChange = (e) => {
@@ -235,11 +245,12 @@ const Student = () => {
         <br />
       </div>
       <div className={style["search"]}>
-        <input
+      <input
           className={`${style["myInput"]} ${style["inputS"]}`}
           type="text"
-          placeholder="Search by name--"
-          id="myInput"
+          onChange={handleSearchInputChange}
+          value={searchTerm}
+          placeholder="Search by name"
         />
       </div>
       <div className={style["container"]}>
@@ -256,8 +267,8 @@ const Student = () => {
               </tr>
             </thead>
             <tbody>
-              {students && displayStudent(students)}
-            </tbody>
+            {filteredStudents && displayStudent(filteredStudents)}
+             </tbody>
           </table>
         </div>
       </div>
