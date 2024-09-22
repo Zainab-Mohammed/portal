@@ -2,9 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/TheList": "pages/TheList.js",
   "/": "pages/index.js",
-  "/StudentSchedule": "pages/StudentSchedule.js",
-  "/DoctorPageForStudent/[id]": "pages/DoctorPageForStudent/[id].js",
-  "/courses/[id]": "pages/courses/[id].js"
+  "/fetchtest": "pages/fetchtest.js",
+  "/DoctorPageForStudent/[id]": "pages/DoctorPageForStudent/[id].js"
 }

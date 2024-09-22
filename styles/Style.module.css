@@ -252,6 +252,11 @@
 .contactus .containerContactus .message{
   grid-column: 1/3;
   grid-row: 3/7;
+  padding:10px;
+  border-radius: 5px;
+  border: 1px solid #25363675;
+  padding: 10px;
+  margin: 10px;
 }
 .contactus   button{
   margin: 0px 200px;

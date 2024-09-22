@@ -163,8 +163,8 @@ overflow: auto;
 }
 
 .notificationsDropdown:hover {
-  width: 750px; 
-  margin-bottom: 20px;
+  /* width: 750px;  */
+  /* margin-bottom: 20px; */
   }
 
 .notificationsDropdown ul li {
@@ -182,6 +182,7 @@ overflow: auto;
   transition:  all .5s ease .5s;
   position: relative;
   margin: 10px;
+  padding-right: 25px;
 
  }
 
@@ -192,7 +193,7 @@ overflow: auto;
   overflow: visible;  
   white-space: normal; 
 /* padding-bottom: 30px; */
-  width: 670px;
+  /* width: 670px; */
   height:  fit-content;
   margin: 20px;
  }

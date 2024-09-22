@@ -46,7 +46,7 @@ export default function Contact() {
 
     <ToastContainer />
 
-    <div className={Styles['body']}>
+    <div className={Styles.body}>
       <div className={Styles.messagesContainer}>
         <h2>Contact Messages</h2>
         {error && <p style={{ color: 'red' }}>{error}</p>}

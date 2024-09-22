@@ -78,8 +78,8 @@
     /* cursor: pointer; */
     transition: background-color 0.3s ease;
 }
-.officeHours{
- list-style: none;
+.officeHours ul{
+ list-style-type: none;
 }
 .officeHours li{
     padding: 20px;
@@ -95,7 +95,7 @@
     padding: 20px;
     padding-left: 25px;
     padding-right: 25px;
-
+ margin: 15px; 
 }
 
 @media (max-width: 768px) {

@@ -104,8 +104,8 @@ export default function Login() {
                         required
                       />
                     </div>
-                    {error && <div className={style.error}>{error}</div>}
-                    {success && <div className={style.success}>{success}</div>}
+                    {error && <div style={{ color: 'red' }} className={style.error}>{error}</div>}
+                    {success && <div style={{ color: 'green' }} className={style.success}>{success}</div>}
                     {/* <div className={style.text}><a href="#">Forgot password?</a></div> */}
                     <div className={`${style.button} ${style.inputBox}`}>
                       <input type="submit" value="Submit" />
