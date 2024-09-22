@@ -3,11 +3,20 @@ import style from "@/styles/schedule.module.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import closeIcon from '/public/images/close-icon.svg'; 
+import { useRouter } from 'next/router';
 
 
 export default function OfficeHours() {
     const [officeHours, setOfficeHours] = useState([]);
     const [did, setDid] = useState(null); // Store the DID once fetched
+    const router = useRouter();
+
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+    if (role !== 'doctor') {
+      router.push('/404'); // Redirect to 404 page
+    }
+  }, [router]);
 
     // Step 1: Fetch DID using UID from local storage
     useEffect(() => {
@@ -130,7 +139,7 @@ export default function OfficeHours() {
             day: form.dayofweak.value,
             startTime: formatTime(parseInt(form.StartTime.value)),  // Convert to 'HH:00:00'
             endTime: formatTime(parseInt(form.EndTime.value)),      // Convert to 'HH:00:00'
-            location: form.Location.value,
+            location: 'Office',
         };
     
         try {
@@ -255,7 +264,8 @@ export default function OfficeHours() {
                     </div>
                     <div className={style.labelSelect}>
                         <label htmlFor="Location">Location</label>
-                        <input id='Location' name="Location" type="text" placeholder="Office location" />
+                        {/* <span>{'officeLocation'}</span> */}
+                        <input id='Location' name="Location" type="text" placeholder="Office location" value={'Office'} disabled />
                     </div>
                     <button type="submit" className={style.AddToSchedule}>Add Office Hour</button>
                 </form>

@@ -14,15 +14,15 @@ import { useRouter } from 'next/router';
 
     useEffect(() => {
         if (id) {
-            const fetchDoctor = async () => {
-                try {
-                    const response = await fetch(`http://localhost:3001/api/v1/p1/users/${id}`);
-                    const data = await response.json();
-                    setDoctor(data[0]);
-                } catch (error) {
-                    console.error('Error fetching doctor details:', error);
-                }
-            };
+            // const fetchDoctor = async () => {
+            //     try {
+            //         const response = await fetch(`http://localhost:3001/api/v1/p1/users/${id}`);
+            //         const data = await response.json();
+            //         setDoctor(data[0]);
+            //     } catch (error) {
+            //         console.error('Error fetching doctor details:', error);
+            //     }
+            // };
 
             const fetchDoctorDetails = async () => {
                 try {
@@ -44,7 +44,7 @@ import { useRouter } from 'next/router';
                 }
             };
 
-            fetchDoctor();
+            // fetchDoctor();
             fetchDoctorDetails();
             fetchDoctorCourses();
         }
@@ -63,7 +63,7 @@ import { useRouter } from 'next/router';
         }
     };
 
-    if (!doctor || !doctorDetails) {
+    if ( !doctorDetails) {
         return(
 <div className="loading">
                 <div className="loadingSpinner"></div>
@@ -76,20 +76,20 @@ import { useRouter } from 'next/router';
         <div className={styles.Body}>
             <div className={styles.container}>
                 <label htmlFor="name">Doctor name:</label>
-                <input id="name" type="text" value={doctor.username} readOnly />
+                <input id="name" type="text" value={doctorCourses.doctor_name} readOnly />
                 
                 <label htmlFor="Contact_Info">Contact Info:</label>
-                <input id="email" type="text" value={doctorDetails.contact_info} readOnly />
+                <input id="email" type="text" value={doctorCourses.contact_info} readOnly />
 
                 <label htmlFor="Courses">Courses:</label>
                 <input id="Courses" type="text" value={doctorCourses.courses_names} readOnly />
                 
                 <label htmlFor="Department">Department:</label>
-                <input id="Department" type="text" value={doctorDetails.department} readOnly />
+                <input id="Department" type="text" value={doctorCourses.department} readOnly />
             </div>
 
             <div className={styles.photoContainer}>
-                <img src={`http://localhost:3001/${doctorDetails.photo}`} alt={doctor.name} />
+                <img src={`http://localhost:3001/${doctorCourses.photo}`} alt={doctorCourses.username} />
             </div>
 
             <button onClick={toggleOfficeHours}>

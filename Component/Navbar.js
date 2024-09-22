@@ -171,7 +171,7 @@ const Navbar = () => {
                   <a href="#" onClick={toggleNotifications}>
                   {hasUnreadNotifications ? (
                 <Image
-                  src="../public/images/photo_2024-09-18_20-18-59.jpg" // Use the relative path to your image in the public folder
+                  src="/images/notification1.svg" // Use the relative path to your image in the public folder
                   alt="Unread Notifications"
                   width={30}
                   height={30}
@@ -198,7 +198,7 @@ const Navbar = () => {
                   <a href="#"  onClick={toggleNotifications}>
                   {hasUnreadNotifications ? (
                 <Image
-                  src="/image/notification.png" // Use the relative path to your image in the public folder
+                  src="/images/notification1.svg" // Use the relative path to your image in the public folder
                   alt="Unread Notifications"
                   width={25}
                   height={25}
@@ -232,14 +232,14 @@ const Navbar = () => {
 
       <ul className={Styles.mainMenu}>
         <li className={Styles.logo}><a href="#">ASSIUT<p>University</p></a></li>
-        <div className={Styles.search}>
+        {/* <div className={Styles.search}>
           <li>
             <input type="text" placeholder="search..." />
             <svg style={{ color: "aliceblue" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="10" height="10">
               <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
             </svg>
           </li>
-        </div>
+        </div> */}
         {isLoggedIn ? (
           <>
             {role === 'admin' && (
@@ -255,7 +255,7 @@ const Navbar = () => {
                   <a href="#" onClick={toggleNotifications}>
                   {hasUnreadNotifications ? (
                 <Image
-                  src="/image/notification.png" // Use the relative path to your image in the public folder
+                  src="/images/notification1.svg" // Use the relative path to your image in the public folder
                   alt="Unread Notifications"
                   width={30}
                   height={30}
@@ -282,7 +282,7 @@ const Navbar = () => {
                   <a href="#"  onClick={toggleNotifications}>
                   {hasUnreadNotifications ? (
                 <Image
-                  src="/image/notification.png" // Use the relative path to your image in the public folder
+                  src="/images/notification1.svg" // Use the relative path to your image in the public folder
                   alt="Unread Notifications"
                   width={25}
                   height={25}

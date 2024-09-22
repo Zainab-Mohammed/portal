@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'; // Import useEffect and useState
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import style from "@/styles/course.module.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Course() {
     const [courses, setCourses] = useState([]); // State for storing courses
@@ -13,7 +15,6 @@ export default function Course() {
     const [isEditing, setIsEditing] = useState(false); // State to track if editing
     const [currentCourseId, setCurrentCourseId] = useState(null); // State to track the course being edited
 
-    // Fetch courses when the component loads
     useEffect(() => {
         fetchCourses();
     }, []);
@@ -45,10 +46,11 @@ export default function Course() {
         }
 
         const existingCourseWithSameCode = courses.find(courseItem =>
-            courseItem.code === code && courseItem.cid !== currentCourseId
+            courseItem.code === code && courseItem.CID !== currentCourseId 
         );
         if (existingCourseWithSameCode) {
-            setErrorMessage('A course with this code already exists.');
+            //setErrorMessage('A course with this code already exists.');
+            toast.error('A course with this code already exists.');
             return;
         }
 
@@ -57,7 +59,6 @@ export default function Course() {
         try {
             let response;
             if (isEditing && currentCourseId) {
-                // Update course
                 response = await fetch(`http://localhost:3001/api/v1/p1/courses/${currentCourseId}`, {
                     method: 'PUT',
                     headers: {
@@ -66,7 +67,6 @@ export default function Course() {
                     body: JSON.stringify(course),
                 });
             } else {
-                // Add new course
                 response = await fetch('http://localhost:3001/api/v1/p1/addcourse', {
                     method: 'POST',
                     headers: {
@@ -88,9 +88,11 @@ export default function Course() {
             setIsEditing(false); // Reset editing state
             setCurrentCourseId(null);
             fetchCourses(); // Refresh course list
+            toast.success(currentCourseId ? 'Course updated successfully!' : 'Course added successfully!');
         } catch (error) {
             console.error('Error adding or updating course:', error);
-            setErrorMessage(error.message);
+            //setErrorMessage(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -105,10 +107,12 @@ export default function Course() {
                 throw new Error(errorData);
             }
 
-            fetchCourses(); // Refresh course list after deletion
+            fetchCourses(); 
+            toast.success('Course deleted successfully!');
         } catch (error) {
             console.error('Error deleting course:', error);
-            setErrorMessage('Failed to delete course.');
+            //setErrorMessage('Failed to delete course.');
+            toast.error(error.message);
         }
     };
 
@@ -124,92 +128,95 @@ export default function Course() {
     };
 
     return (
-        <div className={style["body"]}>
-            {/* Input fields for adding or updating a course */}
-            <div className={style["input"]}>
-                <label className={style["label"]} htmlFor="Cname">Course Name:</label>
+        <>
+        <ToastContainer />
+            <div className={style["body"]}>
+                {/* Input fields for adding or updating a course */}
+                <div className={style["input"]}>
+                    <label className={style["label"]} htmlFor="Cname">Course Name:</label>
+                    <input
+                        className={style["inputS"]}
+                        type="text"
+                        id="Cname"
+                        name="Cname"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </div>
+
+                <div className={style["input"]}>
+                    <label className={style["label"]} htmlFor="Ccode">Course Code:</label>
+                    <input
+                        className={style["inputS"]}
+                        type="text"
+                        id="Ccode"
+                        name="Ccode"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                    />
+                </div>
+
+                <div className={style["input"]}>
+                    <label className={style["label"]} htmlFor="Cdescription">Course Description:</label>
+                    <input
+                        className={`${style["discription"]}`}
+                        type="text"
+                        id="Cdescription"
+                        name="Cdescription"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                </div>
+
+                <button className={style["button"]} onClick={addOrUpdateCourse}>
+                    {isEditing ? 'Update Course' : 'Add Course'}
+                </button>
+
+                {errorMessage && <p className={style["error"]}>{errorMessage}</p>}
+
+                {/* Search bar */}
                 <input
-                    className={style["inputS"]}
+                    className={`${style["myInput"]} ${style["inputS"]}`}
                     type="text"
-                    id="Cname"
-                    name="Cname"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={handleSearchChange}
+                    value={searchTerm}
+                    placeholder="Search by name"
                 />
-            </div>
 
-            <div className={style["input"]}>
-                <label className={style["label"]} htmlFor="Ccode">Course Code:</label>
-                <input
-                    className={style["inputS"]}
-                    type="text"
-                    id="Ccode"
-                    name="Ccode"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                />
-            </div>
-
-            <div className={style["input"]}>
-                <label className={style["label"]} htmlFor="Cdescription">Course Description:</label>
-                <input
-                    className={`${style["discription"]}`}
-                    type="text"
-                    id="Cdescription"
-                    name="Cdescription"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-            </div>
-
-            <button className={style["button"]} onClick={addOrUpdateCourse}>
-                {isEditing ? 'Update Course' : 'Add Course'}
-            </button>
-
-            {errorMessage && <p className={style["error"]}>{errorMessage}</p>}
-
-            {/* Search bar */}
-            <input
-                className={`${style["myInput"]} ${style["inputS"]}`}
-                type="text"
-                onChange={handleSearchChange}
-                value={searchTerm}
-                placeholder="Search by name"
-            />
-
-            {/* Course table */}
-            <div className={style["input2"]}>
-                <table className={style["table"]}>
-                    <thead>
-                        <tr className={style["tr"]}>
-                            <th className={style["th"]}>Course Code</th>
-                            <th className={style["th"]}>Course Name</th>
-                            <th className={style["th"]}>Course Description</th>
-                            <th className={style["th"]}>Update</th>
-                            <th className={style["th"]}>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredCourses.length > 0 && filteredCourses.map((course) => (
-                            <tr key={course.cid} className={style["tr"]}>
-                                <td className={style["td"]}>{course.code}</td>
-                                <td className={style["td"]}>{course.name}</td>
-                                <td className={style["td"]}>{course.description}</td>
-                                <td className={style["td"]}>
-                                    <button onClick={() => updateCourse(course.CID)}>
-                                        <FontAwesomeIcon icon={faPenToSquare} />
-                                    </button>
-                                </td>
-                                <td className={style["td"]}>
-                                    <button onClick={() => deleteCourse(course.CID)}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </button>
-                                </td>
+                {/* Course table */}
+                <div className={style["input2"]}>
+                    <table className={style["table"]}>
+                        <thead>
+                            <tr className={style["tr"]}>
+                                <th className={style["th"]}>Course Code</th>
+                                <th className={style["th"]}>Course Name</th>
+                                <th className={style["th"]}>Course Description</th>
+                                <th className={style["th"]}>Update</th>
+                                <th className={style["th"]}>Delete</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredCourses.length > 0 && filteredCourses.map((course) => (
+                                <tr key={course.cid} className={style["tr"]}>
+                                    <td className={style["td"]}>{course.code}</td>
+                                    <td className={style["td"]}>{course.name}</td>
+                                    <td className={style["td"]}>{course.description}</td>
+                                    <td className={style["td"]}>
+                                        <button onClick={() => updateCourse(course.CID)}>
+                                            <FontAwesomeIcon icon={faPenToSquare} />
+                                        </button>
+                                    </td>
+                                    <td className={style["td"]}>
+                                        <button onClick={() => deleteCourse(course.CID)}>
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

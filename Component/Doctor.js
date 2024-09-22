@@ -17,12 +17,11 @@ const Doctor = () => {
     fetchDoctors();
   }, []);
 
-  // Fetch doctors data from the API
   const fetchDoctors = () => {
     fetch('http://localhost:3001/api/v1/p1/doctors')
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched doctors:', data); // Debugging output
+        console.log('Fetched doctors:', data); 
         setDoctors(data);
       })
       .catch(error => {
@@ -40,12 +39,17 @@ const Doctor = () => {
   // Handle file input change for photo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  
+    if (file && allowedTypes.includes(file.type)) {
       setFormData(prevFormData => ({ ...prevFormData, photo: file }));
+    } else {
+      toast.error('Invalid file type. Only image files are allowed.');
+      e.target.value = ''; // Clear the input if the file type is invalid
     }
   };
+  
 
-  // Handle adding or updating a doctor
   const handleAddOrUpdateDoctor = () => {
     console.log('Form Data Before Before Submission:', formData)
     const method = editingDoctorId ? 'PUT' : 'POST'; // Use PUT for update, POST for add
@@ -109,7 +113,6 @@ const Doctor = () => {
     })
     .then(async (response) => {
       console.log("response",response)
-      // Try parsing as JSON; fallback to text if parsing fails
       const text = await response.text();
       try {
         // Attempt to parse response as JSON
@@ -128,7 +131,7 @@ const Doctor = () => {
     })
       .then(() => {
         setError(null);
-        fetchDoctors(); // Refresh the list after adding/updating
+        fetchDoctors(); 
         setFormData({ username: '', email: '', password: '', currentPassword: '', newPassword: '', phone: '', photo: null, department: '', contact_info: '' }); // Reset form data
         setEditingDoctorId(null); // Clear editing state
         toast.success(editingDoctorId ? 'Doctor updated successfully!' : 'Doctor added successfully!');
@@ -136,13 +139,13 @@ const Doctor = () => {
       .catch(error => {
         console.error('Error adding/updating doctor:', error);
         toast.error(error.message);
-        //setError(error.message); // Update the error state with the specific message
+        //setError(error.message); 
       });
   };
 
   // Set form data for editing a specific doctor
   const handleEditDoctor = (doctor) => {
-    setEditingDoctorId(doctor.UID); // Use the correct id property 'uid'
+    setEditingDoctorId(doctor.UID); 
     setFormData({ 
       username: doctor.username, 
       email: doctor.email, 
@@ -152,18 +155,18 @@ const Doctor = () => {
       contact_info: doctor.contact_info,
       currentPassword: '',
       newPassword: '',
-      photo: doctor.photo, }); // Populate form with doctor data
+      photo: doctor.photo, }); 
   };
 
   // Handle deleting a doctor
   const handleDeleteDoctor = (doctor) => {
-    console.log('Deleting doctor with ID:', doctor.UID); // Debugging output
-    fetch(`http://localhost:3001/api/v1/p1/doctors/${doctor.UID}`, { method: 'DELETE' }) // Correct DELETE request
+    console.log('Deleting doctor with ID:', doctor.UID); 
+    fetch(`http://localhost:3001/api/v1/p1/doctors/${doctor.UID}`, { method: 'DELETE' }) 
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to delete doctor.');
         }
-        setDoctors(doctors.filter(d => d.UID !== doctor.UID)); // Update the state without refreshing
+        setDoctors(doctors.filter(d => d.UID !== doctor.UID));
         toast.success('Doctor deleted successfully!');
       })
       .catch(error => {
@@ -234,13 +237,19 @@ const Doctor = () => {
       console.log(file);
 
       if (file) {
-        setFormData({ ...formData, photo: file }); // Save the file in formData
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const image = document.getElementById("output");
-          image.src = reader.result; // Preview image
-        };
-        reader.readAsDataURL(file); // Convert to data URL
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (allowedTypes.includes(file.type)) {
+          setFormData({ ...formData, photo: file }); // Save the file in formData
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const image = document.getElementById("output");
+            image.src = reader.result; // Preview image
+          };
+          reader.readAsDataURL(file); // Convert to data URL
+        } else {
+          toast.error('Invalid file type. Only image files are allowed.');
+          event.target.value = ''; // Clear the input if the file type is invalid
+        }
       }
     };
 

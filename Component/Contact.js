@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Styles from '@/styles/contact.module.css'; // Adjust the path as needed
+import Styles from '@/styles/contact.module.css'; 
 import closeIcon from '/public/images/close-icon.svg'; 
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -8,12 +8,11 @@ export default function Contact() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Fetch all contact form messages
     const fetchMessages = async () => {
       try {
         const response = await fetch('http://localhost:3001/api/v1/p1/contacts');
         const data = await response.json();
-        console.log('Fetched Messages:', data);  // Debugging line
+        console.log('Fetched Messages:', data);  
         setMessages(data);
       } catch (error) {
         console.error('Error fetching messages:', error);
@@ -23,7 +22,7 @@ export default function Contact() {
     fetchMessages();
   }, []);
 
-  const handleDeleteContact = async (cid) => { // Change 'id' to 'cid'
+  const handleDeleteContact = async (cid) => { 
     try {
       const response = await fetch(`http://localhost:3001/api/v1/p1/contacts/${cid}`, {
         method: 'DELETE',
@@ -61,7 +60,7 @@ export default function Contact() {
                   src={closeIcon.src} 
                   alt="Close" 
                   className={Styles.closeIcon} 
-                  onClick={() => handleDeleteContact(message.CID)} // Use message.CID
+                  onClick={() => handleDeleteContact(message.CID)} 
                   />
               <p><strong>From Email:</strong> {message.email}</p>
               <p><strong>Subject:</strong> {message.subject}</p>

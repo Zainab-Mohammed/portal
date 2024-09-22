@@ -71,59 +71,63 @@ export default function SendNotifications() {
         setMessage('');
         setEmail('');
     } catch (error) {
+      toast.error('Error sending notification');
       console.error('Error sending notification:', error);
     }
   };
   
 
   return (
-    <div className={style['body']}>
-<form onSubmit={handleSubmit}>
-<label className={style['label1']} htmlFor="sendFor">Send For: </label>
-        <select className={style['select']} id="sendFor" name="sendFor" onChange={handleSelectChange}>
-          <option>Select</option>
-          <option value={'all_students'}>All Students</option>
-          <option value={'all_doctors'}>All Doctors</option>
-          <option value={'oneStudent'}>One Student</option>
-          <option value={'oneDoctor'}>One Doctor</option>
-        </select>
-        <br/>
-        <br/>
+    <>
+        <ToastContainer />
+      <div className={style['body']}>
+  <form onSubmit={handleSubmit}>
+  <label className={style['label1']} htmlFor="sendFor">Send For: </label>
+          <select className={style['select']} id="sendFor" name="sendFor" onChange={handleSelectChange}>
+            <option>Select</option>
+            <option value={'all_students'}>All Students</option>
+            <option value={'all_doctors'}>All Doctors</option>
+            <option value={'oneStudent'}>One Student</option>
+            <option value={'oneDoctor'}>One Doctor</option>
+          </select>
+          <br/>
+          <br/>
 
-        <label className={style['label2']} htmlFor="message">Message: </label>
-        <input
-          className={style['inputmessage']}
-          type="text"
-          id="message"
-          name="message"
-          value={message}
-          onChange={handleMessageChange}
-        />
-        <br/>
-        <br/>
+          <label className={style['label2']} htmlFor="message">Message: </label>
+          <input
+            className={style['inputmessage']}
+            type="text"
+            id="message"
+            name="message"
+            value={message}
+            onChange={handleMessageChange}
+          />
+          <br/>
+          <br/>
 
-        {/* Conditionally render the "Enter the email" input based on selection */}
-        {(selectedOption === 'oneStudent' || selectedOption === 'oneDoctor') && (
-          <>
-            <label htmlFor="enterEmail" className={style['label3']}> Enter the email :</label>
-            
-            <input
-              className={style['inputemail']}
-              type="email"
-              id="enterEmail"
-              name="EnteredEmail"
-              value={email}
-              onChange={handleEmailChange}
-            />
+          {/* Conditionally render the "Enter the email" input based on selection */}
+          {(selectedOption === 'oneStudent' || selectedOption === 'oneDoctor') && (
+            <>
+              <label htmlFor="enterEmail" className={style['label3']}> Enter the email :</label>
+              
+              <input
+                className={style['inputemail']}
+                type="email"
+                id="enterEmail"
+                name="EnteredEmail"
+                value={email}
+                onChange={handleEmailChange}
+              />
 
-            <br/>
-            <br/>
-          </>
-        )}
+              <br/>
+              <br/>
+            </>
+          )}
 
-        <button type="submit">Send Now</button>
-      </form>
-    </div>
+          <button type="submit">Send Now</button>
+        </form>
+      </div>
+      </>
   );
 }
 

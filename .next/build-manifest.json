@@ -17,10 +17,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/index.js"
     ],
-    "/Login": [
+    "/DoctorPageForStudent/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Login.js"
+      "static/chunks/pages/DoctorPageForStudent/[id].js"
+    ],
+    "/StudentSchedule": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/StudentSchedule.js"
+    ],
+    "/TheList": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/TheList.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
